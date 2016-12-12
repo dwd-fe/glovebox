@@ -1,5 +1,9 @@
 # Introduction
-This is a library targets 2D hardware-acclerated graphic rendering. This is useful in data presentation scenarios.
+This is a library targets 2D hardware-acclerated graphic rendering. This is useful in data presentation scenario
+
+#Installation
+> npm i glovebox -S
+
 #Example Custom Component
 ```typescript
 class Triangle extends Drawable {
