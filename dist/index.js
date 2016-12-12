@@ -298,6 +298,14 @@
 	webgl.clear(webgl.COLOR_BUFFER_BIT);
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = webgl;
+	function setGl(canvas) {
+	    var gl = canvas.getContext('webgl');
+	    gl.viewport(0, 0, canvas.width, canvas.height);
+	    gl.clearColor(0, 0, 0, 0);
+	    gl.clear(gl.COLOR_BUFFER_BIT);
+	    webgl = gl;
+	}
+	exports.setGl = setGl;
 
 /***/ },
 /* 5 */
@@ -20507,14 +20515,18 @@
 	var guid_1 = __webpack_require__(26);
 	var scale_1 = __webpack_require__(24);
 	var Camera_1 = __webpack_require__(25);
+	var gl_2 = __webpack_require__(4);
 	
 	var Stage = function () {
-	    function Stage() {
+	    function Stage(canvas) {
 	        _classCallCheck(this, Stage);
 	
 	        this._children = [];
 	        this.camera = new Vector2_1.default(0, 0);
 	        this.scale = new Vector2_1.default(1, 1);
+	        if (canvas) {
+	            gl_2.setGl(canvas);
+	        }
 	        var texture = gl_1.default.createTexture();
 	        gl_1.default.bindTexture(gl_1.default.TEXTURE_2D, texture);
 	        gl_1.default.texImage2D(gl_1.default.TEXTURE_2D, 0, gl_1.default.RGBA, gl_1.default.drawingBufferWidth, gl_1.default.drawingBufferHeight, 0, gl_1.default.RGBA, gl_1.default.UNSIGNED_BYTE, null);

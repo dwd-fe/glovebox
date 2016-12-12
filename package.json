@@ -1,6 +1,6 @@
 {
   "name": "glovebox",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "WebGl 2D optimized library, targets large fancy data presentation scenarios.",
   "main": "dist/index.js",
   "typings": "dist/ts/index.d.ts",
