@@ -1,7 +1,10 @@
 import Drawable from 'core/Drawable';
+import Vector2 from 'math/Vector2';
 export default class Stage {
     private _children;
     private hitMap;
+    camera: Vector2;
+    scale: Vector2;
     constructor();
     readonly children: Drawable[];
     add(child: Drawable): void;

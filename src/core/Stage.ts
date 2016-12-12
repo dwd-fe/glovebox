@@ -2,11 +2,16 @@ import gl from 'core/gl';
 import Drawable from 'core/Drawable';
 import Constants from 'core/Constants';
 import Matrix3 from 'math/Matrix3';
+import Vector2 from 'math/Vector2';
 import { removeId } from 'core/guid';
+import viewportScale from 'core/viewport/scale';
+import viewportCamera from 'core/viewport/Camera';
 
 export default class Stage {
     private _children: Drawable[] = [];
     private hitMap: WebGLFramebuffer;
+    public camera: Vector2 = new Vector2(0, 0);
+    public scale: Vector2 = new Vector2(1, 1);
 
     constructor() {
         const texture = gl.createTexture();
@@ -54,6 +59,12 @@ export default class Stage {
     }
 
     render() {
+        if (this.camera.updated || this.scale.updated) {
+            viewportScale.x = this.scale.x;
+            viewportScale.y = this.scale.y;
+            viewportCamera.x = this.camera.x;
+            viewportCamera.y = this.camera.y;
+        }
         const children = this._children.sort((a, b) => a.zIndex - b.zIndex);
         gl.disable(gl.DEPTH_TEST);
         gl.enable(gl.BLEND);
@@ -64,6 +75,10 @@ export default class Stage {
             child.update();
             gl.drawArrays(child.drawType, child.startIndex, child.endIndex);
         }
+
+        viewportScale.updated = false;
+        viewportCamera.updated = false;
+
         gl.disable(gl.BLEND);
         gl.bindFramebuffer(gl.FRAMEBUFFER, this.hitMap);
         for (const child of children) {

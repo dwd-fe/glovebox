@@ -5,3 +5,7 @@ declare module '*.glsl' {
 declare module 'opentype.js' {
     function load(src: string, Function: any): any;
 }
+declare module 'earcut' {
+    function earcut(points: number[]): number[];
+    export = earcut;
+}

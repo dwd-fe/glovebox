@@ -12,6 +12,7 @@ import ImageUtil from 'utils/ImageUtil';
 import Color from 'core/Color';
 import Sprite from 'components/Sprite';
 import Box from 'components/Box';
+import Polygon from 'components/Polygon';
 
 
 const stage = new Stage();
@@ -56,6 +57,8 @@ triangle.attachAttribute('a_position', vertices);
 triangle.attachAttribute('a_color', colors);
 triangle.position.x = 400;
 triangle.position.y = 300;
+triangle.scale.x = 1.5;
+triangle.scale.y = 1.5;
 stage.add(triangle);
 {
     const line = new LineMesh([
@@ -117,6 +120,20 @@ stage.add(triangle);
         box.zIndex = 22;
         stage.add(box);
     }
+    {
+        const polygon = new Polygon([
+            new Vector2(0, 0),
+            new Vector2(120, 0),
+            new Vector2(90, 60),
+            new Vector2(120, 120),
+            new Vector2(0, 120),
+            new Vector2(30, 60),
+        ]);
+        polygon.position.x = 100;
+        polygon.position.y = 300;
+        stage.add(polygon);
+
+    }
 })
 ().catch(e => { throw e; });
 function render() {
@@ -125,6 +142,3 @@ function render() {
     requestAnimationFrame(render);
 }
 render();
-document.onmousedown = e => {
-    console.log(stage.clickTest(e.clientX, e.clientY));
-}

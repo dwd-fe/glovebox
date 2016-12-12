@@ -88,6 +88,13 @@ class Triangle extends Drawable {
 * xIndex: number
 * yIndex: number
 
+## Polygon
+
+* constructor(points: Vector2[]);
+* color: number;
+* opacity: number;
+* points: Vector2[];
+
 # Core
 > All components inherited from Drawable
 ## Drawable
@@ -108,6 +115,8 @@ class Triangle extends Drawable {
 * add(child: Drawable), add child to stage
 * remove(child: Drawable), remove child from stage
 * clear(), clear stage
+* camera: Vector2,
+* scale: Vector2,
 * clickTest(x: number, y: number): number, test if there is a component at given coordinates, 0 is returned if not, id is returned if true
 * render(), render stage
 

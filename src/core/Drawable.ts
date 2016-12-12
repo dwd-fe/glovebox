@@ -4,11 +4,12 @@ import Attribute from 'core/Attribute';
 import Constants from 'core/Constants';
 import Uniform from 'core/Uniform';
 import Matrix3 from 'math/Matrix3';
-import Vector3 from 'math/Vector3';
 import Vector2 from 'math/Vector2';
 import MatrixUniform from 'core/MatrixUniform';
 import TextureUniform from 'core/TextureUniform';
 import viewport from 'core/viewport';
+import viewportScale from 'core/viewport/scale';
+import viewportCamera from 'core/viewport/Camera';
 import { getId } from 'core/guid';
 
 import commonVertexShader from 'shaders/vertex/common.glsl';
@@ -208,7 +209,9 @@ export default class Drawable {
         if (
             this.position.updated ||
             this.rotationUpdated ||
-            this.scale.updated
+            this.scale.updated ||
+            viewportScale.updated ||
+            viewportCamera.updated
         ) {
             this.position.updated = false;
             this.rotationUpdated = false;
@@ -218,11 +221,19 @@ export default class Drawable {
             const c = Math.cos(this._rotation);
 
             this._viewMatrix.replace(
-                viewport.mul(
+                viewport
+                .mul(
                     new Matrix3(
                         1, 0, 0,
                         0, 1, 0,
-                        this.position.x, this.position.y, 1,
+                        viewportCamera.x, viewportCamera.y, 1,
+                    )
+                )
+                .mul(
+                    new Matrix3(
+                        viewportScale.x, 0, 0,
+                        0, viewportScale.y, 0,
+                        0, 0, 1,
                     )
                 )
                 .mul(
@@ -230,6 +241,13 @@ export default class Drawable {
                         c, -s, 0,
                         s, c, 0,
                         0, 0, 1
+                    )
+                )
+                .mul(
+                    new Matrix3(
+                        1, 0, 0,
+                        0, 1, 0,
+                        this.position.x, this.position.y, 1,
                     )
                 )
                 .mul(

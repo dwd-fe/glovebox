@@ -2,7 +2,7 @@ import { mat3 } from 'gl-matrix';
 
 export default class Matrix3 {
     private instance: mat3;
-    private _updated: boolean = false;
+    private _updated: boolean = true;
 
     constructor(
         m00: mat3 | number, m01?: number, m02?: number,
@@ -20,6 +20,9 @@ export default class Matrix3 {
     }
     public get updated(): boolean {
         return this._updated;
+    }
+    public set updated(updated: boolean) {
+        this._updated = updated;
     }
     mul(mat: Matrix3): Matrix3 {
         return new Matrix3(

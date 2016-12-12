@@ -55,49 +55,49 @@
 	
 	var BoxImage_1 = __webpack_require__(2);
 	exports.BoxImage = BoxImage_1.default;
-	var LineMesh_1 = __webpack_require__(29);
+	var LineMesh_1 = __webpack_require__(31);
 	exports.LineMesh = LineMesh_1.default;
-	var Text_1 = __webpack_require__(35);
+	var Text_1 = __webpack_require__(37);
 	exports.Text = Text_1.default;
-	var Sprite_1 = __webpack_require__(39);
+	var Sprite_1 = __webpack_require__(41);
 	exports.Sprite = Sprite_1.default;
-	var Box_1 = __webpack_require__(42);
+	var Box_1 = __webpack_require__(44);
 	exports.Box = Box_1.default;
 	var AbstractUniform_1 = __webpack_require__(7);
 	exports.AbstractUniform = AbstractUniform_1.default;
-	var ArrayUniform_1 = __webpack_require__(45);
+	var ArrayUniform_1 = __webpack_require__(49);
 	exports.ArrayUniform = ArrayUniform_1.default;
 	var Attribute_1 = __webpack_require__(3);
 	exports.Attribute = Attribute_1.default;
-	var Color_1 = __webpack_require__(30);
+	var Color_1 = __webpack_require__(32);
 	exports.Color = Color_1.default;
 	var Constants_1 = __webpack_require__(8);
 	exports.Constants = Constants_1.default;
 	var Drawable_1 = __webpack_require__(5);
 	exports.Drawable = Drawable_1.default;
-	var Font_1 = __webpack_require__(46);
+	var Font_1 = __webpack_require__(50);
 	exports.Font = Font_1.default;
 	var MatrixUniform_1 = __webpack_require__(21);
 	exports.MatrixUniform = MatrixUniform_1.default;
-	var Stage_1 = __webpack_require__(85);
+	var Stage_1 = __webpack_require__(89);
 	exports.Stage = Stage_1.default;
-	var Texture_1 = __webpack_require__(36);
+	var Texture_1 = __webpack_require__(38);
 	exports.Texture = Texture_1.default;
 	var TextureUniform_1 = __webpack_require__(22);
 	exports.TextureUniform = TextureUniform_1.default;
 	var Uniform_1 = __webpack_require__(6);
 	exports.Uniform = Uniform_1.default;
-	var Line_1 = __webpack_require__(31);
+	var Line_1 = __webpack_require__(33);
 	exports.Line = Line_1.default;
-	var Matrix2_1 = __webpack_require__(32);
+	var Matrix2_1 = __webpack_require__(34);
 	exports.Matrix2 = Matrix2_1.default;
 	var Matrix3_1 = __webpack_require__(9);
 	exports.Matrix3 = Matrix3_1.default;
 	var Vector2_1 = __webpack_require__(20);
 	exports.Vector2 = Vector2_1.default;
-	var Vector3_1 = __webpack_require__(86);
+	var Vector3_1 = __webpack_require__(90);
 	exports.Vector3 = Vector3_1.default;
-	var ImageUtil_1 = __webpack_require__(87);
+	var ImageUtil_1 = __webpack_require__(91);
 	exports.ImageUtil = ImageUtil_1.default;
 
 /***/ },
@@ -117,8 +117,8 @@
 	var Attribute_1 = __webpack_require__(3);
 	var Drawable_1 = __webpack_require__(5);
 	var TextureUniform_1 = __webpack_require__(22);
-	var BoxImage_glsl_1 = __webpack_require__(27);
-	var BoxImage_glsl_2 = __webpack_require__(28);
+	var BoxImage_glsl_1 = __webpack_require__(29);
+	var BoxImage_glsl_2 = __webpack_require__(30);
 	
 	var BoxImage = function (_Drawable_1$default) {
 	    _inherits(BoxImage, _Drawable_1$default);
@@ -316,9 +316,11 @@
 	var MatrixUniform_1 = __webpack_require__(21);
 	var TextureUniform_1 = __webpack_require__(22);
 	var viewport_1 = __webpack_require__(23);
-	var guid_1 = __webpack_require__(24);
-	var common_glsl_1 = __webpack_require__(25);
-	var common_glsl_2 = __webpack_require__(26);
+	var scale_1 = __webpack_require__(24);
+	var Camera_1 = __webpack_require__(25);
+	var guid_1 = __webpack_require__(26);
+	var common_glsl_1 = __webpack_require__(27);
+	var common_glsl_2 = __webpack_require__(28);
 	function pad(str, size) {
 	    return ' '.repeat(size).slice(0, size - str.toString().length) + str;
 	}
@@ -453,13 +455,13 @@
 	    }, {
 	        key: 'update',
 	        value: function update() {
-	            if (this.position.updated || this.rotationUpdated || this.scale.updated) {
+	            if (this.position.updated || this.rotationUpdated || this.scale.updated || scale_1.default.updated || Camera_1.default.updated) {
 	                this.position.updated = false;
 	                this.rotationUpdated = false;
 	                this.scale.updated = false;
 	                var s = Math.sin(this._rotation);
 	                var c = Math.cos(this._rotation);
-	                this._viewMatrix.replace(viewport_1.default.mul(new Matrix3_1.default(1, 0, 0, 0, 1, 0, this.position.x, this.position.y, 1)).mul(new Matrix3_1.default(c, -s, 0, s, c, 0, 0, 0, 1)).mul(new Matrix3_1.default(this.scale.x, 0, 0, 0, this.scale.y, 0, 0, 0, 1)).toMat3());
+	                this._viewMatrix.replace(viewport_1.default.mul(new Matrix3_1.default(1, 0, 0, 0, 1, 0, Camera_1.default.x, Camera_1.default.y, 1)).mul(new Matrix3_1.default(scale_1.default.x, 0, 0, 0, scale_1.default.y, 0, 0, 0, 1)).mul(new Matrix3_1.default(c, -s, 0, s, c, 0, 0, 0, 1)).mul(new Matrix3_1.default(1, 0, 0, 0, 1, 0, this.position.x, this.position.y, 1)).mul(new Matrix3_1.default(this.scale.x, 0, 0, 0, this.scale.y, 0, 0, 0, 1)).toMat3());
 	            }
 	            this.updateAttribuets();
 	            this.updateUniforms();
@@ -738,7 +740,7 @@
 	    function Matrix3(m00, m01, m02, m10, m11, m12, m20, m21, m22) {
 	        _classCallCheck(this, Matrix3);
 	
-	        this._updated = false;
+	        this._updated = true;
 	        if (m00 instanceof Float32Array) {
 	            this.instance = m00;
 	        } else {
@@ -779,6 +781,9 @@
 	        key: "updated",
 	        get: function get() {
 	            return this._updated;
+	        },
+	        set: function set(updated) {
+	            this._updated = updated;
 	        }
 	    }, {
 	        key: "raw",
@@ -7676,6 +7681,28 @@
 
 /***/ },
 /* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	var Vector2_1 = __webpack_require__(20);
+	var scale = new Vector2_1.default(1.0, 1.0);
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = scale;
+
+/***/ },
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	var Vector2_1 = __webpack_require__(20);
+	var camera = new Vector2_1.default(0, 0);
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = camera;
+
+/***/ },
+/* 26 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -7697,35 +7724,35 @@
 	exports.removeId = removeId;
 
 /***/ },
-/* 25 */
-/***/ function(module, exports) {
-
-	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.default = "precision highp float;\nprecision highp int;\n\n#define PI 3.14159265359\n#define PI2 6.28318530718\n#define PI_HALF 1.5707963267949\n#define RECIPROCAL_PI 0.31830988618\n#define RECIPROCAL_PI2 0.15915494\n#define LOG2 1.442695\n#define EPSILON 1e-6\n\n#define saturate(a) clamp( a, 0.0, 1.0 )\n#define whiteCompliment(a) ( 1.0 - saturate( a ) )\n\nfloat pow2( const in float x ) { return x*x; }\nfloat pow3( const in float x ) { return x*x*x; }\nfloat pow4( const in float x ) { float x2 = x*x; return x2*x2; }\nfloat average( const in vec3 color ) { return dot( color, vec3( 0.3333 ) ); }\n// expects values in the range of [0,1]x[0,1], returns values in the [0,1] range.\n// do not collapse into a single function per: http://byteblacksmith.com/improvements-to-the-canonical-one-liner-glsl-rand-for-opengl-es-2-0/\nhighp float rand( const in vec2 uv ) {\n\tconst highp float a = 12.9898, b = 78.233, c = 43758.5453;\n\thighp float dt = dot( uv.xy, vec2( a,b ) ), sn = mod( dt, PI );\n\treturn fract(sin(sn) * c);\n}\n\nstruct GeometricContext {\n\tvec3 position;\n\tvec3 normal;\n\tvec3 viewDir;\n};\n\nmat3 transpose( const in mat3 v ) {\n\tmat3 tmp;\n\ttmp[0] = vec3(v[0].x, v[1].x, v[2].x);\n\ttmp[1] = vec3(v[0].y, v[1].y, v[2].y);\n\ttmp[2] = vec3(v[0].z, v[1].z, v[2].z);\n\n\treturn tmp;\n}\n\nuniform mat3 viewMatrix;\nvec4 projection(vec2 pos) {\n  return vec4((vec3(pos, 1.0) * viewMatrix).xy, 0.0, 1.0);\n}\n"
-
-/***/ },
-/* 26 */
-/***/ function(module, exports) {
-
-	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.default = "precision highp float;\nprecision highp int;\nuniform int u_offscreen;\nuniform vec3 u_id;\n"
-
-/***/ },
 /* 27 */
 /***/ function(module, exports) {
 
 	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.default = "attribute vec2 a_vertex;\nattribute vec2 a_uv;\nvarying vec2 v_uv;\n\nvoid main() {\n  gl_Position =  projection(a_vertex);\n  v_uv = a_uv;\n}\n"
+	exports.default = "precision highp float;\nprecision highp int;\n\n#define PI 3.14159265359\n#define PI2 6.28318530718\n#define PI_HALF 1.5707963267949\n#define RECIPROCAL_PI 0.31830988618\n#define RECIPROCAL_PI2 0.15915494\n#define LOG2 1.442695\n#define EPSILON 1e-6\n\n#define saturate(a) clamp( a, 0.0, 1.0 )\n#define whiteCompliment(a) ( 1.0 - saturate( a ) )\n\nfloat pow2( const in float x ) { return x*x; }\nfloat pow3( const in float x ) { return x*x*x; }\nfloat pow4( const in float x ) { float x2 = x*x; return x2*x2; }\nfloat average( const in vec3 color ) { return dot( color, vec3( 0.3333 ) ); }\n// expects values in the range of [0,1]x[0,1], returns values in the [0,1] range.\n// do not collapse into a single function per: http://byteblacksmith.com/improvements-to-the-canonical-one-liner-glsl-rand-for-opengl-es-2-0/\nhighp float rand( const in vec2 uv ) {\n\tconst highp float a = 12.9898, b = 78.233, c = 43758.5453;\n\thighp float dt = dot( uv.xy, vec2( a,b ) ), sn = mod( dt, PI );\n\treturn fract(sin(sn) * c);\n}\n\n\nuniform mat3 viewMatrix;\nvec4 projection(vec2 pos) {\n  return vec4((vec3(pos, 1.0) * viewMatrix).xy, 0.0, 1.0);\n}\n"
 
 /***/ },
 /* 28 */
 /***/ function(module, exports) {
 
 	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.default = "uniform sampler2D u_tex;\nvarying vec2 v_uv;\n\nvoid main() {\n  gl_FragColor = texture2D(u_tex, v_uv);\n}\n"
+	exports.default = "precision highp float;\nprecision highp int;\nuniform int u_offscreen;\nuniform vec3 u_id;\n"
 
 /***/ },
 /* 29 */
+/***/ function(module, exports) {
+
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = "attribute vec2 a_vertex;\nattribute vec2 a_uv;\nvarying vec2 v_uv;\n\nvoid main() {\n  gl_Position =  projection(a_vertex);\n  v_uv = a_uv;\n}\n"
+
+/***/ },
+/* 30 */
+/***/ function(module, exports) {
+
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = "uniform sampler2D u_tex;\nvarying vec2 v_uv;\n\nvoid main() {\n  gl_FragColor = texture2D(u_tex, v_uv);\n}\n"
+
+/***/ },
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -7744,10 +7771,10 @@
 	var Drawable_1 = __webpack_require__(5);
 	var Uniform_1 = __webpack_require__(6);
 	var Vector2_1 = __webpack_require__(20);
-	var Color_1 = __webpack_require__(30);
-	var Line_1 = __webpack_require__(31);
-	var LineMesh_glsl_1 = __webpack_require__(33);
-	var LineMesh_glsl_2 = __webpack_require__(34);
+	var Color_1 = __webpack_require__(32);
+	var Line_1 = __webpack_require__(33);
+	var LineMesh_glsl_1 = __webpack_require__(35);
+	var LineMesh_glsl_2 = __webpack_require__(36);
 	
 	var LineMesh = function (_Drawable_1$default) {
 	    _inherits(LineMesh, _Drawable_1$default);
@@ -7847,7 +7874,7 @@
 	exports.default = LineMesh;
 
 /***/ },
-/* 30 */
+/* 32 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -7911,7 +7938,7 @@
 	exports.default = Color;
 
 /***/ },
-/* 31 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -7921,7 +7948,7 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
 	var Vector2_1 = __webpack_require__(20);
-	var Matrix2_1 = __webpack_require__(32);
+	var Matrix2_1 = __webpack_require__(34);
 	
 	var Line = function () {
 	    function Line(start, end) {
@@ -7969,7 +7996,7 @@
 	exports.default = Line;
 
 /***/ },
-/* 32 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -8018,21 +8045,21 @@
 	exports.default = Matrix2;
 
 /***/ },
-/* 33 */
+/* 35 */
 /***/ function(module, exports) {
 
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = "attribute vec2 a_vertex;\n\nvoid main() {\n  gl_Position =  projection(a_vertex);\n}\n"
 
 /***/ },
-/* 34 */
+/* 36 */
 /***/ function(module, exports) {
 
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = "uniform vec4 u_color;\nvoid main() {\n  gl_FragColor = vec4(u_color);\n}\n"
 
 /***/ },
-/* 35 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -8052,11 +8079,11 @@
 	var Attribute_1 = __webpack_require__(3);
 	var Drawable_1 = __webpack_require__(5);
 	var TextureUniform_1 = __webpack_require__(22);
-	var Texture_1 = __webpack_require__(36);
-	var Color_1 = __webpack_require__(30);
+	var Texture_1 = __webpack_require__(38);
+	var Color_1 = __webpack_require__(32);
 	var Uniform_1 = __webpack_require__(6);
-	var Text_glsl_1 = __webpack_require__(37);
-	var Text_glsl_2 = __webpack_require__(38);
+	var Text_glsl_1 = __webpack_require__(39);
+	var Text_glsl_2 = __webpack_require__(40);
 	
 	var Text = function (_Drawable_1$default) {
 	    _inherits(Text, _Drawable_1$default);
@@ -8205,7 +8232,7 @@
 	exports.default = Text;
 
 /***/ },
-/* 36 */
+/* 38 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -8294,21 +8321,21 @@
 	exports.default = Texture;
 
 /***/ },
-/* 37 */
+/* 39 */
 /***/ function(module, exports) {
 
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = "attribute vec2 a_vertex;\nattribute vec2 a_uv;\nvarying vec2 v_uv;\n\nvoid main() {\n  gl_Position =  projection(a_vertex);\n  v_uv = a_uv;\n}\n"
 
 /***/ },
-/* 38 */
+/* 40 */
 /***/ function(module, exports) {
 
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = "uniform sampler2D u_tex;\nvarying vec2 v_uv;\nuniform vec4 u_color;\n\nvoid main() {\n  gl_FragColor = texture2D(u_tex, v_uv);\n  if (gl_FragColor.r == 0.0) {\n    discard;\n  } else {\n    gl_FragColor = gl_FragColor * u_color;\n  }\n}\n"
 
 /***/ },
-/* 39 */
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -8324,8 +8351,8 @@
 	var Attribute_1 = __webpack_require__(3);
 	var Drawable_1 = __webpack_require__(5);
 	var TextureUniform_1 = __webpack_require__(22);
-	var Sprite_glsl_1 = __webpack_require__(40);
-	var Sprite_glsl_2 = __webpack_require__(41);
+	var Sprite_glsl_1 = __webpack_require__(42);
+	var Sprite_glsl_2 = __webpack_require__(43);
 	
 	var Sprite = function (_Drawable_1$default) {
 	    _inherits(Sprite, _Drawable_1$default);
@@ -8431,28 +8458,26 @@
 	exports.default = Sprite;
 
 /***/ },
-/* 40 */
+/* 42 */
 /***/ function(module, exports) {
 
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = "attribute vec2 a_vertex;\nattribute vec2 a_uv;\nvarying vec2 v_uv;\n\nvoid main() {\n  gl_Position =  projection(a_vertex);\n  v_uv = a_uv;\n}\n"
 
 /***/ },
-/* 41 */
+/* 43 */
 /***/ function(module, exports) {
 
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = "uniform sampler2D u_tex;\nvarying vec2 v_uv;\n\nvoid main() {\n  gl_FragColor = texture2D(u_tex, v_uv);\n}\n"
 
 /***/ },
-/* 42 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
@@ -8460,44 +8485,33 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var Attribute_1 = __webpack_require__(3);
-	var Drawable_1 = __webpack_require__(5);
-	var Color_1 = __webpack_require__(30);
-	var Uniform_1 = __webpack_require__(6);
-	var Box_glsl_1 = __webpack_require__(43);
-	var Box_glsl_2 = __webpack_require__(44);
+	var Polygon_1 = __webpack_require__(45);
+	var Vector2_1 = __webpack_require__(20);
 	
-	var Box = function (_Drawable_1$default) {
-	    _inherits(Box, _Drawable_1$default);
+	var Box = function (_Polygon_1$default) {
+	    _inherits(Box, _Polygon_1$default);
 	
 	    function Box(_width, _height) {
-	        var _this$u_color;
-	
 	        _classCallCheck(this, Box);
 	
-	        var _this = _possibleConstructorReturn(this, (Box.__proto__ || Object.getPrototypeOf(Box)).call(this, Box_glsl_1.default, Box_glsl_2.default));
+	        var _this = _possibleConstructorReturn(this, (Box.__proto__ || Object.getPrototypeOf(Box)).call(this, []));
 	
 	        _this._width = _width;
 	        _this._height = _height;
-	        _this._color = new Color_1.default(0xff0000);
-	        _this.a_vertex = new Attribute_1.default(Attribute_1.default.ARRAY_BUFFER, new Float32Array(8), Attribute_1.default.FLOAT, 2);
-	        _this.attachAttribute('a_vertex', _this.a_vertex);
-	        _this.u_color = new Uniform_1.default(Uniform_1.default.FLOAT, 4);
-	        (_this$u_color = _this.u_color).set.apply(_this$u_color, _toConsumableArray(_this._color.toGl()));
-	        _this.attachUniform('u_color', _this.u_color);
 	        _this.createVertex();
-	        _this.endIndex = 4;
-	        _this._drawType = Attribute_1.default.TRIANGLE_STRIP;
 	        return _this;
 	    }
 	
 	    _createClass(Box, [{
 	        key: 'createVertex',
 	        value: function createVertex() {
-	            this.a_vertex.set(0, 0, 0);
-	            this.a_vertex.set(2, this._width, 0);
-	            this.a_vertex.set(1, 0, this._height);
-	            this.a_vertex.set(3, this._width, this._height);
+	            var points = [];
+	            points.push(new Vector2_1.default(0, 0));
+	            points.push(new Vector2_1.default(0, this._height));
+	            points.push(new Vector2_1.default(this._width, this._height));
+	            points.push(new Vector2_1.default(this._width, 0));
+	            this._points = points;
+	            this.calculateVertices();
 	        }
 	    }, {
 	        key: 'width',
@@ -8516,6 +8530,79 @@
 	        set: function set(height) {
 	            this._height = height;
 	            this.createVertex();
+	        }
+	    }]);
+	
+	    return Box;
+	}(Polygon_1.default);
+	
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = Box;
+
+/***/ },
+/* 45 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var Attribute_1 = __webpack_require__(3);
+	var Drawable_1 = __webpack_require__(5);
+	var Color_1 = __webpack_require__(32);
+	var Uniform_1 = __webpack_require__(6);
+	var earcut = __webpack_require__(46);
+	var Polygon_glsl_1 = __webpack_require__(47);
+	var Polygon_glsl_2 = __webpack_require__(48);
+	
+	var Polygon = function (_Drawable_1$default) {
+	    _inherits(Polygon, _Drawable_1$default);
+	
+	    function Polygon(_points) {
+	        var _this$u_color;
+	
+	        _classCallCheck(this, Polygon);
+	
+	        var _this = _possibleConstructorReturn(this, (Polygon.__proto__ || Object.getPrototypeOf(Polygon)).call(this, Polygon_glsl_1.default, Polygon_glsl_2.default));
+	
+	        _this._points = _points;
+	        _this._color = new Color_1.default(0xff0000);
+	        _this.a_vertex = new Attribute_1.default(Attribute_1.default.ARRAY_BUFFER, null, Attribute_1.default.FLOAT, 2);
+	        _this.attachAttribute('a_vertex', _this.a_vertex);
+	        _this.u_color = new Uniform_1.default(Uniform_1.default.FLOAT, 4);
+	        (_this$u_color = _this.u_color).set.apply(_this$u_color, _toConsumableArray(_this._color.toGl()));
+	        _this.attachUniform('u_color', _this.u_color);
+	        _this.calculateVertices();
+	        return _this;
+	    }
+	
+	    _createClass(Polygon, [{
+	        key: 'calculateVertices',
+	        value: function calculateVertices() {
+	            if (this._points.length) {
+	                var indices = earcut(this._points.map(function (vec) {
+	                    return [vec.x, vec.y];
+	                }).reduce(function (l, v) {
+	                    return l.concat(v);
+	                }, []));
+	                var length = this._points.length - 2;
+	                var data = new Float32Array(length * 3 * 2);
+	                for (var i = 0, l = indices.length; i < l; i++) {
+	                    var p = this._points[indices[i]];
+	                    data[i * 2] = p.x;
+	                    data[i * 2 + 1] = p.y;
+	                }
+	                this.a_vertex.replaceWith(data);
+	                this._endIndex = length * 3;
+	            }
 	        }
 	    }, {
 	        key: 'color',
@@ -8539,30 +8626,688 @@
 	            this._color.opacity = opacity;
 	            (_u_color2 = this.u_color).set.apply(_u_color2, _toConsumableArray(this._color.toGl()));
 	        }
+	    }, {
+	        key: 'points',
+	        get: function get() {
+	            return this._points;
+	        },
+	        set: function set(points) {
+	            this._points = points;
+	        }
 	    }]);
 	
-	    return Box;
+	    return Polygon;
 	}(Drawable_1.default);
 	
 	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.default = Box;
+	exports.default = Polygon;
 
 /***/ },
-/* 43 */
+/* 46 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	module.exports = earcut;
+	
+	function earcut(data, holeIndices, dim) {
+	
+	    dim = dim || 2;
+	
+	    var hasHoles = holeIndices && holeIndices.length,
+	        outerLen = hasHoles ? holeIndices[0] * dim : data.length,
+	        outerNode = linkedList(data, 0, outerLen, dim, true),
+	        triangles = [];
+	
+	    if (!outerNode) return triangles;
+	
+	    var minX, minY, maxX, maxY, x, y, size;
+	
+	    if (hasHoles) outerNode = eliminateHoles(data, holeIndices, outerNode, dim);
+	
+	    // if the shape is not too simple, we'll use z-order curve hash later; calculate polygon bbox
+	    if (data.length > 80 * dim) {
+	        minX = maxX = data[0];
+	        minY = maxY = data[1];
+	
+	        for (var i = dim; i < outerLen; i += dim) {
+	            x = data[i];
+	            y = data[i + 1];
+	            if (x < minX) minX = x;
+	            if (y < minY) minY = y;
+	            if (x > maxX) maxX = x;
+	            if (y > maxY) maxY = y;
+	        }
+	
+	        // minX, minY and size are later used to transform coords into integers for z-order calculation
+	        size = Math.max(maxX - minX, maxY - minY);
+	    }
+	
+	    earcutLinked(outerNode, triangles, dim, minX, minY, size);
+	
+	    return triangles;
+	}
+	
+	// create a circular doubly linked list from polygon points in the specified winding order
+	function linkedList(data, start, end, dim, clockwise) {
+	    var i, last;
+	
+	    if (clockwise === (signedArea(data, start, end, dim) > 0)) {
+	        for (i = start; i < end; i += dim) last = insertNode(i, data[i], data[i + 1], last);
+	    } else {
+	        for (i = end - dim; i >= start; i -= dim) last = insertNode(i, data[i], data[i + 1], last);
+	    }
+	
+	    if (last && equals(last, last.next)) {
+	        removeNode(last);
+	        last = last.next;
+	    }
+	
+	    return last;
+	}
+	
+	// eliminate colinear or duplicate points
+	function filterPoints(start, end) {
+	    if (!start) return start;
+	    if (!end) end = start;
+	
+	    var p = start,
+	        again;
+	    do {
+	        again = false;
+	
+	        if (!p.steiner && (equals(p, p.next) || area(p.prev, p, p.next) === 0)) {
+	            removeNode(p);
+	            p = end = p.prev;
+	            if (p === p.next) return null;
+	            again = true;
+	
+	        } else {
+	            p = p.next;
+	        }
+	    } while (again || p !== end);
+	
+	    return end;
+	}
+	
+	// main ear slicing loop which triangulates a polygon (given as a linked list)
+	function earcutLinked(ear, triangles, dim, minX, minY, size, pass) {
+	    if (!ear) return;
+	
+	    // interlink polygon nodes in z-order
+	    if (!pass && size) indexCurve(ear, minX, minY, size);
+	
+	    var stop = ear,
+	        prev, next;
+	
+	    // iterate through ears, slicing them one by one
+	    while (ear.prev !== ear.next) {
+	        prev = ear.prev;
+	        next = ear.next;
+	
+	        if (size ? isEarHashed(ear, minX, minY, size) : isEar(ear)) {
+	            // cut off the triangle
+	            triangles.push(prev.i / dim);
+	            triangles.push(ear.i / dim);
+	            triangles.push(next.i / dim);
+	
+	            removeNode(ear);
+	
+	            // skipping the next vertice leads to less sliver triangles
+	            ear = next.next;
+	            stop = next.next;
+	
+	            continue;
+	        }
+	
+	        ear = next;
+	
+	        // if we looped through the whole remaining polygon and can't find any more ears
+	        if (ear === stop) {
+	            // try filtering points and slicing again
+	            if (!pass) {
+	                earcutLinked(filterPoints(ear), triangles, dim, minX, minY, size, 1);
+	
+	            // if this didn't work, try curing all small self-intersections locally
+	            } else if (pass === 1) {
+	                ear = cureLocalIntersections(ear, triangles, dim);
+	                earcutLinked(ear, triangles, dim, minX, minY, size, 2);
+	
+	            // as a last resort, try splitting the remaining polygon into two
+	            } else if (pass === 2) {
+	                splitEarcut(ear, triangles, dim, minX, minY, size);
+	            }
+	
+	            break;
+	        }
+	    }
+	}
+	
+	// check whether a polygon node forms a valid ear with adjacent nodes
+	function isEar(ear) {
+	    var a = ear.prev,
+	        b = ear,
+	        c = ear.next;
+	
+	    if (area(a, b, c) >= 0) return false; // reflex, can't be an ear
+	
+	    // now make sure we don't have other points inside the potential ear
+	    var p = ear.next.next;
+	
+	    while (p !== ear.prev) {
+	        if (pointInTriangle(a.x, a.y, b.x, b.y, c.x, c.y, p.x, p.y) &&
+	            area(p.prev, p, p.next) >= 0) return false;
+	        p = p.next;
+	    }
+	
+	    return true;
+	}
+	
+	function isEarHashed(ear, minX, minY, size) {
+	    var a = ear.prev,
+	        b = ear,
+	        c = ear.next;
+	
+	    if (area(a, b, c) >= 0) return false; // reflex, can't be an ear
+	
+	    // triangle bbox; min & max are calculated like this for speed
+	    var minTX = a.x < b.x ? (a.x < c.x ? a.x : c.x) : (b.x < c.x ? b.x : c.x),
+	        minTY = a.y < b.y ? (a.y < c.y ? a.y : c.y) : (b.y < c.y ? b.y : c.y),
+	        maxTX = a.x > b.x ? (a.x > c.x ? a.x : c.x) : (b.x > c.x ? b.x : c.x),
+	        maxTY = a.y > b.y ? (a.y > c.y ? a.y : c.y) : (b.y > c.y ? b.y : c.y);
+	
+	    // z-order range for the current triangle bbox;
+	    var minZ = zOrder(minTX, minTY, minX, minY, size),
+	        maxZ = zOrder(maxTX, maxTY, minX, minY, size);
+	
+	    // first look for points inside the triangle in increasing z-order
+	    var p = ear.nextZ;
+	
+	    while (p && p.z <= maxZ) {
+	        if (p !== ear.prev && p !== ear.next &&
+	            pointInTriangle(a.x, a.y, b.x, b.y, c.x, c.y, p.x, p.y) &&
+	            area(p.prev, p, p.next) >= 0) return false;
+	        p = p.nextZ;
+	    }
+	
+	    // then look for points in decreasing z-order
+	    p = ear.prevZ;
+	
+	    while (p && p.z >= minZ) {
+	        if (p !== ear.prev && p !== ear.next &&
+	            pointInTriangle(a.x, a.y, b.x, b.y, c.x, c.y, p.x, p.y) &&
+	            area(p.prev, p, p.next) >= 0) return false;
+	        p = p.prevZ;
+	    }
+	
+	    return true;
+	}
+	
+	// go through all polygon nodes and cure small local self-intersections
+	function cureLocalIntersections(start, triangles, dim) {
+	    var p = start;
+	    do {
+	        var a = p.prev,
+	            b = p.next.next;
+	
+	        if (!equals(a, b) && intersects(a, p, p.next, b) && locallyInside(a, b) && locallyInside(b, a)) {
+	
+	            triangles.push(a.i / dim);
+	            triangles.push(p.i / dim);
+	            triangles.push(b.i / dim);
+	
+	            // remove two nodes involved
+	            removeNode(p);
+	            removeNode(p.next);
+	
+	            p = start = b;
+	        }
+	        p = p.next;
+	    } while (p !== start);
+	
+	    return p;
+	}
+	
+	// try splitting polygon into two and triangulate them independently
+	function splitEarcut(start, triangles, dim, minX, minY, size) {
+	    // look for a valid diagonal that divides the polygon into two
+	    var a = start;
+	    do {
+	        var b = a.next.next;
+	        while (b !== a.prev) {
+	            if (a.i !== b.i && isValidDiagonal(a, b)) {
+	                // split the polygon in two by the diagonal
+	                var c = splitPolygon(a, b);
+	
+	                // filter colinear points around the cuts
+	                a = filterPoints(a, a.next);
+	                c = filterPoints(c, c.next);
+	
+	                // run earcut on each half
+	                earcutLinked(a, triangles, dim, minX, minY, size);
+	                earcutLinked(c, triangles, dim, minX, minY, size);
+	                return;
+	            }
+	            b = b.next;
+	        }
+	        a = a.next;
+	    } while (a !== start);
+	}
+	
+	// link every hole into the outer loop, producing a single-ring polygon without holes
+	function eliminateHoles(data, holeIndices, outerNode, dim) {
+	    var queue = [],
+	        i, len, start, end, list;
+	
+	    for (i = 0, len = holeIndices.length; i < len; i++) {
+	        start = holeIndices[i] * dim;
+	        end = i < len - 1 ? holeIndices[i + 1] * dim : data.length;
+	        list = linkedList(data, start, end, dim, false);
+	        if (list === list.next) list.steiner = true;
+	        queue.push(getLeftmost(list));
+	    }
+	
+	    queue.sort(compareX);
+	
+	    // process holes from left to right
+	    for (i = 0; i < queue.length; i++) {
+	        eliminateHole(queue[i], outerNode);
+	        outerNode = filterPoints(outerNode, outerNode.next);
+	    }
+	
+	    return outerNode;
+	}
+	
+	function compareX(a, b) {
+	    return a.x - b.x;
+	}
+	
+	// find a bridge between vertices that connects hole with an outer ring and and link it
+	function eliminateHole(hole, outerNode) {
+	    outerNode = findHoleBridge(hole, outerNode);
+	    if (outerNode) {
+	        var b = splitPolygon(outerNode, hole);
+	        filterPoints(b, b.next);
+	    }
+	}
+	
+	// David Eberly's algorithm for finding a bridge between hole and outer polygon
+	function findHoleBridge(hole, outerNode) {
+	    var p = outerNode,
+	        hx = hole.x,
+	        hy = hole.y,
+	        qx = -Infinity,
+	        m;
+	
+	    // find a segment intersected by a ray from the hole's leftmost point to the left;
+	    // segment's endpoint with lesser x will be potential connection point
+	    do {
+	        if (hy <= p.y && hy >= p.next.y) {
+	            var x = p.x + (hy - p.y) * (p.next.x - p.x) / (p.next.y - p.y);
+	            if (x <= hx && x > qx) {
+	                qx = x;
+	                if (x === hx) {
+	                    if (hy === p.y) return p;
+	                    if (hy === p.next.y) return p.next;
+	                }
+	                m = p.x < p.next.x ? p : p.next;
+	            }
+	        }
+	        p = p.next;
+	    } while (p !== outerNode);
+	
+	    if (!m) return null;
+	
+	    if (hx === qx) return m.prev; // hole touches outer segment; pick lower endpoint
+	
+	    // look for points inside the triangle of hole point, segment intersection and endpoint;
+	    // if there are no points found, we have a valid connection;
+	    // otherwise choose the point of the minimum angle with the ray as connection point
+	
+	    var stop = m,
+	        mx = m.x,
+	        my = m.y,
+	        tanMin = Infinity,
+	        tan;
+	
+	    p = m.next;
+	
+	    while (p !== stop) {
+	        if (hx >= p.x && p.x >= mx &&
+	                pointInTriangle(hy < my ? hx : qx, hy, mx, my, hy < my ? qx : hx, hy, p.x, p.y)) {
+	
+	            tan = Math.abs(hy - p.y) / (hx - p.x); // tangential
+	
+	            if ((tan < tanMin || (tan === tanMin && p.x > m.x)) && locallyInside(p, hole)) {
+	                m = p;
+	                tanMin = tan;
+	            }
+	        }
+	
+	        p = p.next;
+	    }
+	
+	    return m;
+	}
+	
+	// interlink polygon nodes in z-order
+	function indexCurve(start, minX, minY, size) {
+	    var p = start;
+	    do {
+	        if (p.z === null) p.z = zOrder(p.x, p.y, minX, minY, size);
+	        p.prevZ = p.prev;
+	        p.nextZ = p.next;
+	        p = p.next;
+	    } while (p !== start);
+	
+	    p.prevZ.nextZ = null;
+	    p.prevZ = null;
+	
+	    sortLinked(p);
+	}
+	
+	// Simon Tatham's linked list merge sort algorithm
+	// http://www.chiark.greenend.org.uk/~sgtatham/algorithms/listsort.html
+	function sortLinked(list) {
+	    var i, p, q, e, tail, numMerges, pSize, qSize,
+	        inSize = 1;
+	
+	    do {
+	        p = list;
+	        list = null;
+	        tail = null;
+	        numMerges = 0;
+	
+	        while (p) {
+	            numMerges++;
+	            q = p;
+	            pSize = 0;
+	            for (i = 0; i < inSize; i++) {
+	                pSize++;
+	                q = q.nextZ;
+	                if (!q) break;
+	            }
+	
+	            qSize = inSize;
+	
+	            while (pSize > 0 || (qSize > 0 && q)) {
+	
+	                if (pSize === 0) {
+	                    e = q;
+	                    q = q.nextZ;
+	                    qSize--;
+	                } else if (qSize === 0 || !q) {
+	                    e = p;
+	                    p = p.nextZ;
+	                    pSize--;
+	                } else if (p.z <= q.z) {
+	                    e = p;
+	                    p = p.nextZ;
+	                    pSize--;
+	                } else {
+	                    e = q;
+	                    q = q.nextZ;
+	                    qSize--;
+	                }
+	
+	                if (tail) tail.nextZ = e;
+	                else list = e;
+	
+	                e.prevZ = tail;
+	                tail = e;
+	            }
+	
+	            p = q;
+	        }
+	
+	        tail.nextZ = null;
+	        inSize *= 2;
+	
+	    } while (numMerges > 1);
+	
+	    return list;
+	}
+	
+	// z-order of a point given coords and size of the data bounding box
+	function zOrder(x, y, minX, minY, size) {
+	    // coords are transformed into non-negative 15-bit integer range
+	    x = 32767 * (x - minX) / size;
+	    y = 32767 * (y - minY) / size;
+	
+	    x = (x | (x << 8)) & 0x00FF00FF;
+	    x = (x | (x << 4)) & 0x0F0F0F0F;
+	    x = (x | (x << 2)) & 0x33333333;
+	    x = (x | (x << 1)) & 0x55555555;
+	
+	    y = (y | (y << 8)) & 0x00FF00FF;
+	    y = (y | (y << 4)) & 0x0F0F0F0F;
+	    y = (y | (y << 2)) & 0x33333333;
+	    y = (y | (y << 1)) & 0x55555555;
+	
+	    return x | (y << 1);
+	}
+	
+	// find the leftmost node of a polygon ring
+	function getLeftmost(start) {
+	    var p = start,
+	        leftmost = start;
+	    do {
+	        if (p.x < leftmost.x) leftmost = p;
+	        p = p.next;
+	    } while (p !== start);
+	
+	    return leftmost;
+	}
+	
+	// check if a point lies within a convex triangle
+	function pointInTriangle(ax, ay, bx, by, cx, cy, px, py) {
+	    return (cx - px) * (ay - py) - (ax - px) * (cy - py) >= 0 &&
+	           (ax - px) * (by - py) - (bx - px) * (ay - py) >= 0 &&
+	           (bx - px) * (cy - py) - (cx - px) * (by - py) >= 0;
+	}
+	
+	// check if a diagonal between two polygon nodes is valid (lies in polygon interior)
+	function isValidDiagonal(a, b) {
+	    return a.next.i !== b.i && a.prev.i !== b.i && !intersectsPolygon(a, b) &&
+	           locallyInside(a, b) && locallyInside(b, a) && middleInside(a, b);
+	}
+	
+	// signed area of a triangle
+	function area(p, q, r) {
+	    return (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
+	}
+	
+	// check if two points are equal
+	function equals(p1, p2) {
+	    return p1.x === p2.x && p1.y === p2.y;
+	}
+	
+	// check if two segments intersect
+	function intersects(p1, q1, p2, q2) {
+	    if ((equals(p1, q1) && equals(p2, q2)) ||
+	        (equals(p1, q2) && equals(p2, q1))) return true;
+	    return area(p1, q1, p2) > 0 !== area(p1, q1, q2) > 0 &&
+	           area(p2, q2, p1) > 0 !== area(p2, q2, q1) > 0;
+	}
+	
+	// check if a polygon diagonal intersects any polygon segments
+	function intersectsPolygon(a, b) {
+	    var p = a;
+	    do {
+	        if (p.i !== a.i && p.next.i !== a.i && p.i !== b.i && p.next.i !== b.i &&
+	                intersects(p, p.next, a, b)) return true;
+	        p = p.next;
+	    } while (p !== a);
+	
+	    return false;
+	}
+	
+	// check if a polygon diagonal is locally inside the polygon
+	function locallyInside(a, b) {
+	    return area(a.prev, a, a.next) < 0 ?
+	        area(a, b, a.next) >= 0 && area(a, a.prev, b) >= 0 :
+	        area(a, b, a.prev) < 0 || area(a, a.next, b) < 0;
+	}
+	
+	// check if the middle point of a polygon diagonal is inside the polygon
+	function middleInside(a, b) {
+	    var p = a,
+	        inside = false,
+	        px = (a.x + b.x) / 2,
+	        py = (a.y + b.y) / 2;
+	    do {
+	        if (((p.y > py) !== (p.next.y > py)) && (px < (p.next.x - p.x) * (py - p.y) / (p.next.y - p.y) + p.x))
+	            inside = !inside;
+	        p = p.next;
+	    } while (p !== a);
+	
+	    return inside;
+	}
+	
+	// link two polygon vertices with a bridge; if the vertices belong to the same ring, it splits polygon into two;
+	// if one belongs to the outer ring and another to a hole, it merges it into a single ring
+	function splitPolygon(a, b) {
+	    var a2 = new Node(a.i, a.x, a.y),
+	        b2 = new Node(b.i, b.x, b.y),
+	        an = a.next,
+	        bp = b.prev;
+	
+	    a.next = b;
+	    b.prev = a;
+	
+	    a2.next = an;
+	    an.prev = a2;
+	
+	    b2.next = a2;
+	    a2.prev = b2;
+	
+	    bp.next = b2;
+	    b2.prev = bp;
+	
+	    return b2;
+	}
+	
+	// create a node and optionally link it with previous one (in a circular doubly linked list)
+	function insertNode(i, x, y, last) {
+	    var p = new Node(i, x, y);
+	
+	    if (!last) {
+	        p.prev = p;
+	        p.next = p;
+	
+	    } else {
+	        p.next = last.next;
+	        p.prev = last;
+	        last.next.prev = p;
+	        last.next = p;
+	    }
+	    return p;
+	}
+	
+	function removeNode(p) {
+	    p.next.prev = p.prev;
+	    p.prev.next = p.next;
+	
+	    if (p.prevZ) p.prevZ.nextZ = p.nextZ;
+	    if (p.nextZ) p.nextZ.prevZ = p.prevZ;
+	}
+	
+	function Node(i, x, y) {
+	    // vertice index in coordinates array
+	    this.i = i;
+	
+	    // vertex coordinates
+	    this.x = x;
+	    this.y = y;
+	
+	    // previous and next vertice nodes in a polygon ring
+	    this.prev = null;
+	    this.next = null;
+	
+	    // z-order curve value
+	    this.z = null;
+	
+	    // previous and next nodes in z-order
+	    this.prevZ = null;
+	    this.nextZ = null;
+	
+	    // indicates whether this is a steiner point
+	    this.steiner = false;
+	}
+	
+	// return a percentage difference between the polygon area and its triangulation area;
+	// used to verify correctness of triangulation
+	earcut.deviation = function (data, holeIndices, dim, triangles) {
+	    var hasHoles = holeIndices && holeIndices.length;
+	    var outerLen = hasHoles ? holeIndices[0] * dim : data.length;
+	
+	    var polygonArea = Math.abs(signedArea(data, 0, outerLen, dim));
+	    if (hasHoles) {
+	        for (var i = 0, len = holeIndices.length; i < len; i++) {
+	            var start = holeIndices[i] * dim;
+	            var end = i < len - 1 ? holeIndices[i + 1] * dim : data.length;
+	            polygonArea -= Math.abs(signedArea(data, start, end, dim));
+	        }
+	    }
+	
+	    var trianglesArea = 0;
+	    for (i = 0; i < triangles.length; i += 3) {
+	        var a = triangles[i] * dim;
+	        var b = triangles[i + 1] * dim;
+	        var c = triangles[i + 2] * dim;
+	        trianglesArea += Math.abs(
+	            (data[a] - data[c]) * (data[b + 1] - data[a + 1]) -
+	            (data[a] - data[b]) * (data[c + 1] - data[a + 1]));
+	    }
+	
+	    return polygonArea === 0 && trianglesArea === 0 ? 0 :
+	        Math.abs((trianglesArea - polygonArea) / polygonArea);
+	};
+	
+	function signedArea(data, start, end, dim) {
+	    var sum = 0;
+	    for (var i = start, j = end - dim; i < end; i += dim) {
+	        sum += (data[j] - data[i]) * (data[i + 1] + data[j + 1]);
+	        j = i;
+	    }
+	    return sum;
+	}
+	
+	// turn a polygon in a multi-dimensional array form (e.g. as in GeoJSON) into a form Earcut accepts
+	earcut.flatten = function (data) {
+	    var dim = data[0][0].length,
+	        result = {vertices: [], holes: [], dimensions: dim},
+	        holeIndex = 0;
+	
+	    for (var i = 0; i < data.length; i++) {
+	        for (var j = 0; j < data[i].length; j++) {
+	            for (var d = 0; d < dim; d++) result.vertices.push(data[i][j][d]);
+	        }
+	        if (i > 0) {
+	            holeIndex += data[i - 1].length;
+	            result.holes.push(holeIndex);
+	        }
+	    }
+	    return result;
+	};
+
+
+/***/ },
+/* 47 */
 /***/ function(module, exports) {
 
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = "attribute vec2 a_vertex;\n\nvoid main() {\n  gl_Position =  projection(a_vertex);\n}\n"
 
 /***/ },
-/* 44 */
+/* 48 */
 /***/ function(module, exports) {
 
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = "uniform vec4 u_color;\n\nvoid main() {\n  gl_FragColor = u_color;\n}\n"
 
 /***/ },
-/* 45 */
+/* 49 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -8632,7 +9377,7 @@
 	exports.default = ArrayUniform;
 
 /***/ },
-/* 46 */
+/* 50 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -8665,7 +9410,7 @@
 	        step((generator = generator.apply(thisArg, _arguments)).next());
 	    });
 	};
-	var opentype = __webpack_require__(47);
+	var opentype = __webpack_require__(51);
 	function toNearestBase(n, e) {
 	    return Math.pow(e, Math.ceil(Math.log(n) / Math.log(e)));
 	}
@@ -8954,7 +9699,7 @@
 	exports.default = Font;
 
 /***/ },
-/* 47 */
+/* 51 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// opentype.js
@@ -8966,32 +9711,32 @@
 	
 	'use strict';
 	
-	var inflate = __webpack_require__(48);
+	var inflate = __webpack_require__(52);
 	
-	var encoding = __webpack_require__(49);
-	var _font = __webpack_require__(50);
-	var glyph = __webpack_require__(60);
-	var parse = __webpack_require__(57);
-	var path = __webpack_require__(51);
-	var util = __webpack_require__(74);
+	var encoding = __webpack_require__(53);
+	var _font = __webpack_require__(54);
+	var glyph = __webpack_require__(64);
+	var parse = __webpack_require__(61);
+	var path = __webpack_require__(55);
+	var util = __webpack_require__(78);
 	
-	var cmap = __webpack_require__(56);
-	var cff = __webpack_require__(58);
-	var fvar = __webpack_require__(80);
-	var glyf = __webpack_require__(81);
-	var gpos = __webpack_require__(82);
-	var gsub = __webpack_require__(70);
-	var head = __webpack_require__(62);
-	var hhea = __webpack_require__(63);
-	var hmtx = __webpack_require__(64);
-	var kern = __webpack_require__(83);
-	var ltag = __webpack_require__(65);
-	var loca = __webpack_require__(84);
-	var maxp = __webpack_require__(66);
-	var _name = __webpack_require__(67);
-	var os2 = __webpack_require__(68);
-	var post = __webpack_require__(69);
-	var meta = __webpack_require__(71);
+	var cmap = __webpack_require__(60);
+	var cff = __webpack_require__(62);
+	var fvar = __webpack_require__(84);
+	var glyf = __webpack_require__(85);
+	var gpos = __webpack_require__(86);
+	var gsub = __webpack_require__(74);
+	var head = __webpack_require__(66);
+	var hhea = __webpack_require__(67);
+	var hmtx = __webpack_require__(68);
+	var kern = __webpack_require__(87);
+	var ltag = __webpack_require__(69);
+	var loca = __webpack_require__(88);
+	var maxp = __webpack_require__(70);
+	var _name = __webpack_require__(71);
+	var os2 = __webpack_require__(72);
+	var post = __webpack_require__(73);
+	var meta = __webpack_require__(75);
 	
 	/**
 	 * The opentype library.
@@ -9006,7 +9751,7 @@
 	 * @param  {Function} callback - The function to call when the font load completes
 	 */
 	function loadFromFile(path, callback) {
-	    var fs = __webpack_require__(79);
+	    var fs = __webpack_require__(83);
 	    fs.readFile(path, function(err, buffer) {
 	        if (err) {
 	            return callback(err.message);
@@ -9333,7 +10078,7 @@
 	 * @return {opentype.Font}
 	 */
 	function loadSync(url) {
-	    var fs = __webpack_require__(79);
+	    var fs = __webpack_require__(83);
 	    var buffer = fs.readFileSync(url);
 	    return parseBuffer(util.nodeBufferToArrayBuffer(buffer));
 	}
@@ -9348,7 +10093,7 @@
 
 
 /***/ },
-/* 48 */
+/* 52 */
 /***/ function(module, exports) {
 
 	var TINF_OK = 0;
@@ -9729,7 +10474,7 @@
 
 
 /***/ },
-/* 49 */
+/* 53 */
 /***/ function(module, exports) {
 
 	// Glyph encoding
@@ -10016,19 +10761,19 @@
 
 
 /***/ },
-/* 50 */
+/* 54 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// The Font object
 	
 	'use strict';
 	
-	var path = __webpack_require__(51);
-	var sfnt = __webpack_require__(52);
-	var encoding = __webpack_require__(49);
-	var glyphset = __webpack_require__(59);
-	var Substitution = __webpack_require__(72);
-	var util = __webpack_require__(74);
+	var path = __webpack_require__(55);
+	var sfnt = __webpack_require__(56);
+	var encoding = __webpack_require__(53);
+	var glyphset = __webpack_require__(63);
+	var Substitution = __webpack_require__(76);
+	var util = __webpack_require__(78);
 	
 	/**
 	 * @typedef FontOptions
@@ -10451,7 +11196,7 @@
 	            throw new Error(err.name + ': ' + err.message);
 	        });
 	    } else {
-	        var fs = __webpack_require__(79);
+	        var fs = __webpack_require__(83);
 	        var buffer = util.arrayBufferToNodeBuffer(arrayBuffer);
 	        fs.writeFileSync(fileName, buffer);
 	    }
@@ -10506,7 +11251,7 @@
 
 
 /***/ },
-/* 51 */
+/* 55 */
 /***/ function(module, exports) {
 
 	// Geometric objects
@@ -10761,7 +11506,7 @@
 
 
 /***/ },
-/* 52 */
+/* 56 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// The `sfnt` wrapper provides organization for the tables in the font.
@@ -10772,21 +11517,21 @@
 	
 	'use strict';
 	
-	var check = __webpack_require__(53);
-	var table = __webpack_require__(54);
+	var check = __webpack_require__(57);
+	var table = __webpack_require__(58);
 	
-	var cmap = __webpack_require__(56);
-	var cff = __webpack_require__(58);
-	var head = __webpack_require__(62);
-	var hhea = __webpack_require__(63);
-	var hmtx = __webpack_require__(64);
-	var ltag = __webpack_require__(65);
-	var maxp = __webpack_require__(66);
-	var _name = __webpack_require__(67);
-	var os2 = __webpack_require__(68);
-	var post = __webpack_require__(69);
-	var gsub = __webpack_require__(70);
-	var meta = __webpack_require__(71);
+	var cmap = __webpack_require__(60);
+	var cff = __webpack_require__(62);
+	var head = __webpack_require__(66);
+	var hhea = __webpack_require__(67);
+	var hmtx = __webpack_require__(68);
+	var ltag = __webpack_require__(69);
+	var maxp = __webpack_require__(70);
+	var _name = __webpack_require__(71);
+	var os2 = __webpack_require__(72);
+	var post = __webpack_require__(73);
+	var gsub = __webpack_require__(74);
+	var meta = __webpack_require__(75);
 	
 	function log2(v) {
 	    return Math.log(v) / Math.log(2) | 0;
@@ -11109,7 +11854,7 @@
 
 
 /***/ },
-/* 53 */
+/* 57 */
 /***/ function(module, exports) {
 
 	// Run-time checking of preconditions.
@@ -11134,16 +11879,16 @@
 
 
 /***/ },
-/* 54 */
+/* 58 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Table metadata
 	
 	'use strict';
 	
-	var check = __webpack_require__(53);
-	var encode = __webpack_require__(55).encode;
-	var sizeOf = __webpack_require__(55).sizeOf;
+	var check = __webpack_require__(57);
+	var encode = __webpack_require__(59).encode;
+	var sizeOf = __webpack_require__(59).sizeOf;
 	/**
 	 * @exports opentype.Table
 	 * @class
@@ -11340,7 +12085,7 @@
 
 
 /***/ },
-/* 55 */
+/* 59 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Data types used in the OpenType font file.
@@ -11350,7 +12095,7 @@
 	
 	'use strict';
 	
-	var check = __webpack_require__(53);
+	var check = __webpack_require__(57);
 	
 	var LIMIT16 = 32768; // The limit at which a 16-bit number switches signs == 2^15
 	var LIMIT32 = 2147483648; // The limit at which a 32-bit number switches signs == 2 ^ 31
@@ -12211,7 +12956,7 @@
 
 
 /***/ },
-/* 56 */
+/* 60 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// The `cmap` table stores the mappings from characters to glyphs.
@@ -12219,9 +12964,9 @@
 	
 	'use strict';
 	
-	var check = __webpack_require__(53);
-	var parse = __webpack_require__(57);
-	var table = __webpack_require__(54);
+	var check = __webpack_require__(57);
+	var parse = __webpack_require__(61);
+	var table = __webpack_require__(58);
 	
 	function parseCmapTableFormat12(cmap, p) {
 	    var i;
@@ -12439,14 +13184,14 @@
 
 
 /***/ },
-/* 57 */
+/* 61 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Parsing utility functions
 	
 	'use strict';
 	
-	var check = __webpack_require__(53);
+	var check = __webpack_require__(57);
 	
 	// Retrieve an unsigned byte from the DataView.
 	exports.getByte = function getByte(dataView, offset) {
@@ -12894,7 +13639,7 @@
 
 
 /***/ },
-/* 58 */
+/* 62 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// The `CFF` table contains the glyph outlines in PostScript format.
@@ -12904,11 +13649,11 @@
 	
 	'use strict';
 	
-	var encoding = __webpack_require__(49);
-	var glyphset = __webpack_require__(59);
-	var parse = __webpack_require__(57);
-	var path = __webpack_require__(51);
-	var table = __webpack_require__(54);
+	var encoding = __webpack_require__(53);
+	var glyphset = __webpack_require__(63);
+	var parse = __webpack_require__(61);
+	var path = __webpack_require__(55);
+	var table = __webpack_require__(58);
 	
 	// Custom equals function that can also check lists.
 	function equals(a, b) {
@@ -14012,14 +14757,14 @@
 
 
 /***/ },
-/* 59 */
+/* 63 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// The GlyphSet object
 	
 	'use strict';
 	
-	var _glyph = __webpack_require__(60);
+	var _glyph = __webpack_require__(64);
 	
 	// Define a property on the glyph that depends on the path being loaded.
 	function defineDependentProperty(glyph, externalName, internalName) {
@@ -14150,16 +14895,16 @@
 
 
 /***/ },
-/* 60 */
+/* 64 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// The Glyph object
 	
 	'use strict';
 	
-	var check = __webpack_require__(53);
-	var draw = __webpack_require__(61);
-	var path = __webpack_require__(51);
+	var check = __webpack_require__(57);
+	var draw = __webpack_require__(65);
+	var path = __webpack_require__(55);
 	
 	function getPathDefinition(glyph, path) {
 	    var _path = path || { commands: [] };
@@ -14489,7 +15234,7 @@
 
 
 /***/ },
-/* 61 */
+/* 65 */
 /***/ function(module, exports) {
 
 	// Drawing utility functions.
@@ -14508,7 +15253,7 @@
 
 
 /***/ },
-/* 62 */
+/* 66 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// The `head` table contains global information about the font.
@@ -14516,9 +15261,9 @@
 	
 	'use strict';
 	
-	var check = __webpack_require__(53);
-	var parse = __webpack_require__(57);
-	var table = __webpack_require__(54);
+	var check = __webpack_require__(57);
+	var parse = __webpack_require__(61);
+	var table = __webpack_require__(58);
 	
 	// Parse the header `head` table
 	function parseHeadTable(data, start) {
@@ -14580,7 +15325,7 @@
 
 
 /***/ },
-/* 63 */
+/* 67 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// The `hhea` table contains information for horizontal layout.
@@ -14588,8 +15333,8 @@
 	
 	'use strict';
 	
-	var parse = __webpack_require__(57);
-	var table = __webpack_require__(54);
+	var parse = __webpack_require__(61);
+	var table = __webpack_require__(58);
 	
 	// Parse the horizontal header `hhea` table
 	function parseHheaTable(data, start) {
@@ -14639,7 +15384,7 @@
 
 
 /***/ },
-/* 64 */
+/* 68 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// The `hmtx` table contains the horizontal metrics for all glyphs.
@@ -14647,8 +15392,8 @@
 	
 	'use strict';
 	
-	var parse = __webpack_require__(57);
-	var table = __webpack_require__(54);
+	var parse = __webpack_require__(61);
+	var table = __webpack_require__(58);
 	
 	// Parse the `hmtx` table, which contains the horizontal metrics for all glyphs.
 	// This function augments the glyph array, adding the advanceWidth and leftSideBearing to each glyph.
@@ -14687,7 +15432,7 @@
 
 
 /***/ },
-/* 65 */
+/* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// The `ltag` table stores IETF BCP-47 language tags. It allows supporting
@@ -14698,9 +15443,9 @@
 	
 	'use strict';
 	
-	var check = __webpack_require__(53);
-	var parse = __webpack_require__(57);
-	var table = __webpack_require__(54);
+	var check = __webpack_require__(57);
+	var parse = __webpack_require__(61);
+	var table = __webpack_require__(58);
 	
 	function makeLtagTable(tags) {
 	    var result = new table.Table('ltag', [
@@ -14754,7 +15499,7 @@
 
 
 /***/ },
-/* 66 */
+/* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// The `maxp` table establishes the memory requirements for the font.
@@ -14763,8 +15508,8 @@
 	
 	'use strict';
 	
-	var parse = __webpack_require__(57);
-	var table = __webpack_require__(54);
+	var parse = __webpack_require__(61);
+	var table = __webpack_require__(58);
 	
 	// Parse the maximum profile `maxp` table.
 	function parseMaxpTable(data, start) {
@@ -14803,7 +15548,7 @@
 
 
 /***/ },
-/* 67 */
+/* 71 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// The `name` naming table.
@@ -14811,11 +15556,11 @@
 	
 	'use strict';
 	
-	var types = __webpack_require__(55);
+	var types = __webpack_require__(59);
 	var decode = types.decode;
 	var encode = types.encode;
-	var parse = __webpack_require__(57);
-	var table = __webpack_require__(54);
+	var parse = __webpack_require__(61);
+	var table = __webpack_require__(58);
 	
 	// NameIDs for the name table.
 	var nameTableNames = [
@@ -15644,7 +16389,7 @@
 
 
 /***/ },
-/* 68 */
+/* 72 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// The `OS/2` table contains metrics required in OpenType fonts.
@@ -15652,8 +16397,8 @@
 	
 	'use strict';
 	
-	var parse = __webpack_require__(57);
-	var table = __webpack_require__(54);
+	var parse = __webpack_require__(61);
+	var table = __webpack_require__(58);
 	
 	var unicodeRanges = [
 	    {begin: 0x0000, end: 0x007F}, // Basic Latin
@@ -15904,7 +16649,7 @@
 
 
 /***/ },
-/* 69 */
+/* 73 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// The `post` table stores additional PostScript information, such as glyph names.
@@ -15912,9 +16657,9 @@
 	
 	'use strict';
 	
-	var encoding = __webpack_require__(49);
-	var parse = __webpack_require__(57);
-	var table = __webpack_require__(54);
+	var encoding = __webpack_require__(53);
+	var parse = __webpack_require__(61);
+	var table = __webpack_require__(58);
 	
 	// Parse the PostScript `post` table
 	function parsePostTable(data, start) {
@@ -15981,7 +16726,7 @@
 
 
 /***/ },
-/* 70 */
+/* 74 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// The `GSUB` table contains ligatures, among other things.
@@ -15989,10 +16734,10 @@
 	
 	'use strict';
 	
-	var check = __webpack_require__(53);
-	var Parser = __webpack_require__(57).Parser;
+	var check = __webpack_require__(57);
+	var Parser = __webpack_require__(61).Parser;
 	var subtableParsers = new Array(9);         // subtableParsers[0] is unused
-	var table = __webpack_require__(54);
+	var table = __webpack_require__(58);
 	
 	// https://www.microsoft.com/typography/OTSPEC/GSUB.htm#SS
 	subtableParsers[1] = function parseLookup1() {
@@ -16245,7 +16990,7 @@
 
 
 /***/ },
-/* 71 */
+/* 75 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// The `GPOS` table contains kerning pairs, among other things.
@@ -16253,11 +16998,11 @@
 	
 	'use strict';
 	
-	var types = __webpack_require__(55);
+	var types = __webpack_require__(59);
 	var decode = types.decode;
-	var check = __webpack_require__(53);
-	var parse = __webpack_require__(57);
-	var table = __webpack_require__(54);
+	var check = __webpack_require__(57);
+	var parse = __webpack_require__(61);
+	var table = __webpack_require__(58);
 	
 	// Parse the metadata `meta` table.
 	// https://developer.apple.com/fonts/TrueType-Reference-Manual/RM06/Chap6meta.html
@@ -16312,7 +17057,7 @@
 
 
 /***/ },
-/* 72 */
+/* 76 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// The Substitution object provides utility methods to manipulate
@@ -16320,8 +17065,8 @@
 	
 	'use strict';
 	
-	var check = __webpack_require__(53);
-	var Layout = __webpack_require__(73);
+	var check = __webpack_require__(57);
+	var Layout = __webpack_require__(77);
 	
 	/**
 	 * @exports opentype.Substitution
@@ -16627,7 +17372,7 @@
 
 
 /***/ },
-/* 73 */
+/* 77 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// The Layout object is the prototype of Substition objects, and provides utility methods to manipulate
@@ -16635,7 +17380,7 @@
 	
 	'use strict';
 	
-	var check = __webpack_require__(53);
+	var check = __webpack_require__(57);
 	
 	function searchTag(arr, tag) {
 	    /* jshint bitwise: false */
@@ -16875,7 +17620,7 @@
 
 
 /***/ },
-/* 74 */
+/* 78 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {'use strict';
@@ -16914,10 +17659,10 @@
 	    }
 	};
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(75).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(79).Buffer))
 
 /***/ },
-/* 75 */
+/* 79 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {/*!
@@ -16930,9 +17675,9 @@
 	
 	'use strict'
 	
-	var base64 = __webpack_require__(76)
-	var ieee754 = __webpack_require__(77)
-	var isArray = __webpack_require__(78)
+	var base64 = __webpack_require__(80)
+	var ieee754 = __webpack_require__(81)
+	var isArray = __webpack_require__(82)
 	
 	exports.Buffer = Buffer
 	exports.SlowBuffer = SlowBuffer
@@ -18710,10 +19455,10 @@
 	  return val !== val // eslint-disable-line no-self-compare
 	}
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(75).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(79).Buffer))
 
 /***/ },
-/* 76 */
+/* 80 */
 /***/ function(module, exports) {
 
 	'use strict'
@@ -18833,7 +19578,7 @@
 
 
 /***/ },
-/* 77 */
+/* 81 */
 /***/ function(module, exports) {
 
 	exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -18923,7 +19668,7 @@
 
 
 /***/ },
-/* 78 */
+/* 82 */
 /***/ function(module, exports) {
 
 	var toString = {}.toString;
@@ -18934,13 +19679,13 @@
 
 
 /***/ },
-/* 79 */
+/* 83 */
 /***/ function(module, exports) {
 
 	/* (ignored) */
 
 /***/ },
-/* 80 */
+/* 84 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// The `fvar` table stores font variation axes and instances.
@@ -18948,9 +19693,9 @@
 	
 	'use strict';
 	
-	var check = __webpack_require__(53);
-	var parse = __webpack_require__(57);
-	var table = __webpack_require__(54);
+	var check = __webpack_require__(57);
+	var parse = __webpack_require__(61);
+	var table = __webpack_require__(58);
 	
 	function addName(name, names) {
 	    var nameString = JSON.stringify(name);
@@ -19085,7 +19830,7 @@
 
 
 /***/ },
-/* 81 */
+/* 85 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// The `glyf` table describes the glyphs in TrueType outline format.
@@ -19093,10 +19838,10 @@
 	
 	'use strict';
 	
-	var check = __webpack_require__(53);
-	var glyphset = __webpack_require__(59);
-	var parse = __webpack_require__(57);
-	var path = __webpack_require__(51);
+	var check = __webpack_require__(57);
+	var glyphset = __webpack_require__(63);
+	var parse = __webpack_require__(61);
+	var path = __webpack_require__(55);
 	
 	// Parse the coordinate data for a glyph.
 	function parseGlyphCoordinate(p, flag, previousValue, shortVectorBitMask, sameBitMask) {
@@ -19426,7 +20171,7 @@
 
 
 /***/ },
-/* 82 */
+/* 86 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// The `GPOS` table contains kerning pairs, among other things.
@@ -19434,8 +20179,8 @@
 	
 	'use strict';
 	
-	var check = __webpack_require__(53);
-	var parse = __webpack_require__(57);
+	var check = __webpack_require__(57);
+	var parse = __webpack_require__(61);
 	
 	// Parse ScriptList and FeatureList tables of GPOS, GSUB, GDEF, BASE, JSTF tables.
 	// These lists are unused by now, this function is just the basis for a real parsing.
@@ -19668,7 +20413,7 @@
 
 
 /***/ },
-/* 83 */
+/* 87 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// The `kern` table contains kerning pairs.
@@ -19677,8 +20422,8 @@
 	
 	'use strict';
 	
-	var check = __webpack_require__(53);
-	var parse = __webpack_require__(57);
+	var check = __webpack_require__(57);
+	var parse = __webpack_require__(61);
 	
 	// Parse the `kern` table which contains kerning pairs.
 	function parseKernTable(data, start) {
@@ -19709,7 +20454,7 @@
 
 
 /***/ },
-/* 84 */
+/* 88 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// The `loca` table stores the offsets to the locations of the glyphs in the font.
@@ -19717,7 +20462,7 @@
 	
 	'use strict';
 	
-	var parse = __webpack_require__(57);
+	var parse = __webpack_require__(61);
 	
 	// Parse the `loca` table. This table stores the offsets to the locations of the glyphs in the font,
 	// relative to the beginning of the glyphData table.
@@ -19748,7 +20493,7 @@
 
 
 /***/ },
-/* 85 */
+/* 89 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -19758,13 +20503,18 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
 	var gl_1 = __webpack_require__(4);
-	var guid_1 = __webpack_require__(24);
+	var Vector2_1 = __webpack_require__(20);
+	var guid_1 = __webpack_require__(26);
+	var scale_1 = __webpack_require__(24);
+	var Camera_1 = __webpack_require__(25);
 	
 	var Stage = function () {
 	    function Stage() {
 	        _classCallCheck(this, Stage);
 	
 	        this._children = [];
+	        this.camera = new Vector2_1.default(0, 0);
+	        this.scale = new Vector2_1.default(1, 1);
 	        var texture = gl_1.default.createTexture();
 	        gl_1.default.bindTexture(gl_1.default.TEXTURE_2D, texture);
 	        gl_1.default.texImage2D(gl_1.default.TEXTURE_2D, 0, gl_1.default.RGBA, gl_1.default.drawingBufferWidth, gl_1.default.drawingBufferHeight, 0, gl_1.default.RGBA, gl_1.default.UNSIGNED_BYTE, null);
@@ -19812,6 +20562,12 @@
 	    }, {
 	        key: 'render',
 	        value: function render() {
+	            if (this.camera.updated || this.scale.updated) {
+	                scale_1.default.x = this.scale.x;
+	                scale_1.default.y = this.scale.y;
+	                Camera_1.default.x = this.camera.x;
+	                Camera_1.default.y = this.camera.y;
+	            }
 	            var children = this._children.sort(function (a, b) {
 	                return a.zIndex - b.zIndex;
 	            });
@@ -19846,6 +20602,8 @@
 	                }
 	            }
 	
+	            scale_1.default.updated = false;
+	            Camera_1.default.updated = false;
 	            gl_1.default.disable(gl_1.default.BLEND);
 	            gl_1.default.bindFramebuffer(gl_1.default.FRAMEBUFFER, this.hitMap);
 	            var _iteratorNormalCompletion2 = true;
@@ -19892,7 +20650,7 @@
 	exports.default = Stage;
 
 /***/ },
-/* 86 */
+/* 90 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -19978,7 +20736,7 @@
 	exports.default = Vector3;
 
 /***/ },
-/* 87 */
+/* 91 */
 /***/ function(module, exports) {
 
 	"use strict";
