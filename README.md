@@ -1,6 +1,47 @@
 # Introduction
 This is a library targets 2D hardware-acclerated graphic rendering. This is useful in data presentation scenarios.
+#Example Custom Component
+```typescript
+class Triangle extends Drawable {
+    constructor() {
+        super(
+            `
+                attribute vec2 a_position;
+                attribute vec3 a_color;
+                varying vec3 v_color;
 
+                void main() {
+                    gl_Position = projection(a_position);
+                    v_color = a_color;
+                }
+            `,
+            `
+                varying vec3 v_color;
+                uniform vec3 u_color;
+                void main() {
+                    gl_FragColor = vec4(v_color, 1.0);
+                    //gl_FragColor = vec4(u_color, 1.0);
+                }
+            `
+        );
+        this._endIndex = 3;
+        const colors = new Attribute(Attribute.ARRAY_BUFFER, new Float32Array(9), Attribute.FLOAT, 3);
+        colors.set(0, 1, 0, 0);
+        colors.set(1, 0, 1, 0);
+        colors.set(2, 0, 0, 1);
+
+        const vertices = new Attribute(Attribute.ARRAY_BUFFER, new Float32Array(6), Attribute.FLOAT, 2);
+        vertices.set(0, 0, 0);
+        vertices.set(1, 0, 100);
+        vertices.set(2, 100, 100);
+
+        this.attachAttribute('a_position', vertices);
+        this.attachAttribute('a_color', colors);
+    }
+}
+
+
+```
 
 # Components
 ## Box
@@ -130,14 +171,14 @@ constructor(hex: number, opacity?: number)
 * STATIC_DRAW
 * DYNAMIC_DRAW
 * STREAM_DRAW
-    
+
 ### AttributeType
 * BYTE
 * UNSIGNED_BYTE
 * SHORT
 * UNSIGNED_SHORT
 * FLOAT
-    
+
 ### DrawType
 * POINTS
 * LINES
