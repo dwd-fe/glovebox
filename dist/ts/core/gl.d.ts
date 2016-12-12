@@ -1,3 +1,4 @@
-declare let webgl: WebGLRenderingContext;
-export default webgl;
-export declare function setGl(canvas: HTMLCanvasElement): void;
+declare let gl: WebGLRenderingContext;
+export default gl;
+export declare function mountGl(dom: HTMLElement): void;
+export declare function setGlSize(width: number, height: number): void;

@@ -5,7 +5,7 @@ export default class Stage {
     private hitMap;
     camera: Vector2;
     scale: Vector2;
-    constructor(canvas?: HTMLCanvasElement);
+    constructor(width?: number, height?: number, dom?: HTMLElement);
     readonly children: Drawable[];
     add(child: Drawable): void;
     remove(child: Drawable): void;

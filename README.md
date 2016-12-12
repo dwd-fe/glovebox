@@ -112,7 +112,7 @@ class Triangle extends Drawable {
 ## Stage
 > Stage holds all components.
 
-* constructor(canvas?: HTMLCanvasElement), use default canvas or your own
+* constructor(width?: number, height?: number, canvas?: HTMLCanvasElement), use default canvas or your own
 * add(child: Drawable), add child to stage
 * remove(child: Drawable), remove child from stage
 * clear(), clear stage

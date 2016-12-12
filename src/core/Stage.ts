@@ -6,7 +6,7 @@ import Vector2 from 'math/Vector2';
 import { removeId } from 'core/guid';
 import viewportScale from 'core/viewport/scale';
 import viewportCamera from 'core/viewport/Camera';
-import { setGl } from 'core/gl';
+import { mountGl, setGlSize } from 'core/gl';
 
 export default class Stage {
     private _children: Drawable[] = [];
@@ -14,9 +14,12 @@ export default class Stage {
     public camera: Vector2 = new Vector2(0, 0);
     public scale: Vector2 = new Vector2(1, 1);
 
-    constructor(canvas?: HTMLCanvasElement) {
-        if (canvas) {
-            setGl(canvas);
+    constructor(width?: number, height?: number, dom?: HTMLElement) {
+        setGlSize(width, height);
+        if (dom) {
+            mountGl(dom);
+        } else {
+            mountGl(document.body);
         }
         const texture = gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, texture);

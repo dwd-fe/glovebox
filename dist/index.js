@@ -289,23 +289,24 @@
 	"use strict";
 	
 	var canvas = document.createElement('canvas');
-	document.body.appendChild(canvas);
 	canvas.width = document.body.clientWidth;
 	canvas.height = document.body.clientHeight;
-	var webgl = canvas.getContext('webgl');
-	webgl.viewport(0, 0, canvas.width, canvas.height);
-	webgl.clearColor(0, 0, 0, 0);
-	webgl.clear(webgl.COLOR_BUFFER_BIT);
+	var gl = canvas.getContext('webgl');
+	gl.viewport(0, 0, canvas.width, canvas.height);
+	gl.clearColor(0, 0, 0, 0);
+	gl.clear(gl.COLOR_BUFFER_BIT);
 	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.default = webgl;
-	function setGl(canvas) {
-	    var gl = canvas.getContext('webgl');
-	    gl.viewport(0, 0, canvas.width, canvas.height);
-	    gl.clearColor(0, 0, 0, 0);
-	    gl.clear(gl.COLOR_BUFFER_BIT);
-	    webgl = gl;
+	exports.default = gl;
+	function mountGl(dom) {
+	    dom.appendChild(canvas);
 	}
-	exports.setGl = setGl;
+	exports.mountGl = mountGl;
+	function setGlSize(width, height) {
+	    canvas.width = width || canvas.width;
+	    canvas.height = height || canvas.height;
+	    gl.viewport(0, 0, canvas.width, canvas.height);
+	}
+	exports.setGlSize = setGlSize;
 
 /***/ },
 /* 5 */
@@ -20518,14 +20519,17 @@
 	var gl_2 = __webpack_require__(4);
 	
 	var Stage = function () {
-	    function Stage(canvas) {
+	    function Stage(width, height, dom) {
 	        _classCallCheck(this, Stage);
 	
 	        this._children = [];
 	        this.camera = new Vector2_1.default(0, 0);
 	        this.scale = new Vector2_1.default(1, 1);
-	        if (canvas) {
-	            gl_2.setGl(canvas);
+	        gl_2.setGlSize(width, height);
+	        if (dom) {
+	            gl_2.mountGl(dom);
+	        } else {
+	            gl_2.mountGl(document.body);
 	        }
 	        var texture = gl_1.default.createTexture();
 	        gl_1.default.bindTexture(gl_1.default.TEXTURE_2D, texture);
