@@ -1,3 +1,6 @@
+[![NPM version][npm-image]][npm-url]
+[![Dependencies][david-image]][david-url]
+
 # Introduction
 This is a library targets 2D hardware-acclerated graphic rendering. This is useful in data presentation scenario
 
@@ -249,3 +252,10 @@ constructor(hex: number, opacity?: number)
 ## ImageUtil
 * static loadAsScaled(src: string): Promise<HTMLCanvasElement>
 * static loadAsPadded(src: string, padColor: Color): Promise<HTMLCanvasElement>
+
+
+
+[npm-image]: https://img.shields.io/npm/v/glovebox.svg?style=flat-square
+[npm-url]: https://www.npmjs.com/package/glovebox
+[david-image]: https://img.shields.io/david/dwd-fe/glovebox.svg?style=flat-square
+[david-url]: https://david-dm.org/joesonw/dwd-fe/glovebox
