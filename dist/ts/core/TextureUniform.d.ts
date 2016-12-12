@@ -1,0 +1,38 @@
+import AbstractUniform from 'core/AbstractUniform';
+import Constants from 'core/Constants';
+import Texture from 'core/Texture';
+export default class TextureUniform extends AbstractUniform {
+    private _image;
+    private texture;
+    private index;
+    private attached;
+    private _packAlignment;
+    private _unpackAlignment;
+    private _unpackFlipY;
+    private _unpackPremultiplyAlpha;
+    private _magFilter;
+    private _minFilter;
+    private _wrapS;
+    private _wrapT;
+    private _format;
+    private _level;
+    private _texelFormat;
+    static MAG_FILTER: typeof Constants.TextureMagFilter;
+    static MIN_FILTER: typeof Constants.TextureMinFilter;
+    static WRAP: typeof Constants.TextureWrap;
+    constructor(_image: Texture);
+    setActiveIndex(index: number): void;
+    image: Texture;
+    protected _update(loc: WebGLUniformLocation): void;
+    packAlignment: Constants.TextureAlignment;
+    unpackAlignment: Constants.TextureAlignment;
+    unpackFlipY: boolean;
+    unpackPremultiplyAlpha: boolean;
+    magFilter: Constants.TextureMagFilter;
+    minFilter: Constants.TextureMinFilter;
+    wrapS: Constants.TextureWrap;
+    wrapT: Constants.TextureWrap;
+    format: Constants.TextureFormat;
+    level: number;
+    texelFormat: Constants.TextureTexelFormat;
+}
