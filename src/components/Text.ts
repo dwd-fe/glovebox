@@ -17,6 +17,7 @@ export default class Text extends Drawable {
     private u_tex: TextureUniform;
     private _color: Color = new Color(0xff0000);
     private u_color: Uniform;
+    private _width: number = 0;
 
     constructor(private _font: Font, private _text: string, private _height: number) {
         super(vs, fs);
@@ -82,6 +83,10 @@ export default class Text extends Drawable {
         this.createVertex();
     }
 
+    public get width(): number {
+        return this._width;
+    }
+
     private createVertex(): void {
         const vertices = [];
         const uvs = [];
@@ -114,5 +119,6 @@ export default class Text extends Drawable {
         this.a_uv.replaceWith(new Float32Array(uvs));
         this.a_vertex.replaceWith(new Float32Array(vertices));
         this._endIndex = this._text.length * 6;
+        this._width = cursorX;
     }
 }

@@ -9,11 +9,13 @@ export default class Text extends Drawable {
     private u_tex;
     private _color;
     private u_color;
+    private _width;
     constructor(_font: Font, _text: string, _height: number);
     color: number;
     opacity: number;
     font: Font;
     text: string;
     height: number;
+    readonly width: number;
     private createVertex();
 }

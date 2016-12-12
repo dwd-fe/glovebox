@@ -8072,6 +8072,7 @@
 	        _this._text = _text;
 	        _this._height = _height;
 	        _this._color = new Color_1.default(0xff0000);
+	        _this._width = 0;
 	        _this.a_vertex = new Attribute_1.default(Attribute_1.default.ARRAY_BUFFER, new Float32Array(null), Attribute_1.default.FLOAT, 2);
 	        _this.attachAttribute('a_vertex', _this.a_vertex);
 	        _this.a_uv = new Attribute_1.default(Attribute_1.default.ARRAY_BUFFER, new Float32Array(null), Attribute_1.default.FLOAT, 2);
@@ -8139,6 +8140,7 @@
 	            this.a_uv.replaceWith(new Float32Array(uvs));
 	            this.a_vertex.replaceWith(new Float32Array(vertices));
 	            this._endIndex = this._text.length * 6;
+	            this._width = cursorX;
 	        }
 	    }, {
 	        key: 'color',
@@ -8188,6 +8190,11 @@
 	        set: function set(height) {
 	            this._height = height;
 	            this.createVertex();
+	        }
+	    }, {
+	        key: 'width',
+	        get: function get() {
+	            return this._width;
 	        }
 	    }]);
 	
