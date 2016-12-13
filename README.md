@@ -32,12 +32,12 @@ class Triangle extends Drawable {
             `
         );
         this._endIndex = 3;
-        const colors = new Attribute(Attribute.ARRAY_BUFFER, new Float32Array(9), Attribute.FLOAT, 3);
+        const colors = new Attribute(new Float32Array(9), Attribute.FLOAT, 3);
         colors.set(0, 1, 0, 0);
         colors.set(1, 0, 1, 0);
         colors.set(2, 0, 0, 1);
 
-        const vertices = new Attribute(Attribute.ARRAY_BUFFER, new Float32Array(6), Attribute.FLOAT, 2);
+        const vertices = new Attribute(new Float32Array(6), Attribute.FLOAT, 2);
         vertices.set(0, 0, 0);
         vertices.set(1, 0, 100);
         vertices.set(2, 100, 100);
@@ -99,6 +99,8 @@ class Triangle extends Drawable {
 > All components inherited from Drawable
 ## Drawable
 * constructor(vertexShaderString: string, fragmentShaderString: string);
+* readonly drawMethod: Constants.DrawMethod;
+* readonly elementType: Constants.ElementType;
 * readonly id: number, unique id, auto assigned.
 * rotation: boolean, set component rotation, in `radians`
 * scale: Vector2, set scale
@@ -133,9 +135,10 @@ constructor(hex: number, opacity?: number)
 > __all `set` operations will trigger update/remount of attributes/uniforms__
 
 ## Attribute
-* constructor(target: Constants.AttributeTarget, buffer: TypedArray, type: Constants.AttributeType, dataSize: number)
+* constructor(buffer: TypedArray, type: Constants.AttributeType, dataSize: number)
 * set(index: number, ...data: number[]), set data at given index
 * get(index: number): number[], get data at given index
+* indexBuffer: Uint8Array | Uint16Array, index array for current vertex.
 * replaceWith(buffer: TypedArray)
 
 ## Uniform
@@ -180,10 +183,6 @@ constructor(hex: number, opacity?: number)
 
 ## Constants
 
-### AttributeTarget
-* ARRAY_BUFFER
-* ELEMENT\_ARRAY\_BUFFER
-
 ###  AttributeUsage
 * STATIC_DRAW
 * DYNAMIC_DRAW
@@ -195,6 +194,14 @@ constructor(hex: number, opacity?: number)
 * SHORT
 * UNSIGNED_SHORT
 * FLOAT
+
+### DrawMethod
+* ARRAYS
+* ELEMENTS
+
+### ElementType
+* UNSIGNED_BYTE
+* UNSIGNED_SHORT
 
 ### DrawType
 * POINTS

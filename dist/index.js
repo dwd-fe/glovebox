@@ -63,7 +63,7 @@
 	exports.Sprite = Sprite_1.default;
 	var Box_1 = __webpack_require__(44);
 	exports.Box = Box_1.default;
-	var AbstractUniform_1 = __webpack_require__(7);
+	var AbstractUniform_1 = __webpack_require__(8);
 	exports.AbstractUniform = AbstractUniform_1.default;
 	var ArrayUniform_1 = __webpack_require__(49);
 	exports.ArrayUniform = ArrayUniform_1.default;
@@ -71,7 +71,7 @@
 	exports.Attribute = Attribute_1.default;
 	var Color_1 = __webpack_require__(32);
 	exports.Color = Color_1.default;
-	var Constants_1 = __webpack_require__(8);
+	var Constants_1 = __webpack_require__(6);
 	exports.Constants = Constants_1.default;
 	var Drawable_1 = __webpack_require__(5);
 	exports.Drawable = Drawable_1.default;
@@ -85,7 +85,7 @@
 	exports.Texture = Texture_1.default;
 	var TextureUniform_1 = __webpack_require__(22);
 	exports.TextureUniform = TextureUniform_1.default;
-	var Uniform_1 = __webpack_require__(6);
+	var Uniform_1 = __webpack_require__(7);
 	exports.Uniform = Uniform_1.default;
 	var Line_1 = __webpack_require__(33);
 	exports.Line = Line_1.default;
@@ -130,9 +130,9 @@
 	
 	        _this._width = _width;
 	        _this._height = _height;
-	        _this.a_vertex = new Attribute_1.default(Attribute_1.default.ARRAY_BUFFER, new Float32Array(8), Attribute_1.default.FLOAT, 2);
+	        _this.a_vertex = new Attribute_1.default(new Float32Array(8), Attribute_1.default.FLOAT, 2);
 	        _this.attachAttribute('a_vertex', _this.a_vertex);
-	        _this.a_uv = new Attribute_1.default(Attribute_1.default.ARRAY_BUFFER, new Float32Array(8), Attribute_1.default.FLOAT, 2);
+	        _this.a_uv = new Attribute_1.default(new Float32Array(8), Attribute_1.default.FLOAT, 2);
 	        _this.attachAttribute('a_uv', _this.a_uv);
 	        _this.u_tex = new TextureUniform_1.default(texture);
 	        _this.attachUniform('u_tex', _this.u_tex);
@@ -193,7 +193,7 @@
 	var gl_1 = __webpack_require__(4);
 	
 	var Attribute = function () {
-	    function Attribute(target, buffer, type, dataSize) {
+	    function Attribute(buffer, type, dataSize) {
 	        _classCallCheck(this, Attribute);
 	
 	        this.updated = true;
@@ -201,7 +201,6 @@
 	        this._normalized = false;
 	        this._stride = 0;
 	        this._offset = 0;
-	        this._target = target;
 	        this._type = type;
 	        this._buffer = buffer;
 	        this.dataSize = dataSize;
@@ -242,9 +241,14 @@
 	            if (!this._bufferPointer) {
 	                this._bufferPointer = gl_1.default.createBuffer();
 	            }
-	            gl_1.default.bindBuffer(this._target, this._bufferPointer);
-	            gl_1.default.bufferData(this._target, this._buffer, this._usage);
+	            gl_1.default.bindBuffer(gl_1.default.ARRAY_BUFFER, this._bufferPointer);
+	            gl_1.default.bufferData(gl_1.default.ARRAY_BUFFER, this._buffer, this._usage);
 	            gl_1.default.vertexAttribPointer(loc, this.dataSize, this._type, this._normalized, this._stride, this._offset);
+	            if (this._indexBuffer) {
+	                var buffer = gl_1.default.createBuffer();
+	                gl_1.default.bindBuffer(gl_1.default.ELEMENT_ARRAY_BUFFER, buffer);
+	                gl_1.default.bufferData(gl_1.default.ELEMENT_ARRAY_BUFFER, this._indexBuffer, this._usage);
+	            }
 	            this.updated = false;
 	        }
 	    }, {
@@ -256,6 +260,15 @@
 	        key: "buffer",
 	        get: function get() {
 	            return this._bufferPointer;
+	        }
+	    }, {
+	        key: "indexBuffer",
+	        get: function get() {
+	            return this._indexBuffer;
+	        },
+	        set: function set(indexBuffer) {
+	            this._indexBuffer = indexBuffer;
+	            this.updated = true;
 	        }
 	    }]);
 	
@@ -270,8 +283,6 @@
 	Attribute.SHORT = gl_1.default.SHORT;
 	Attribute.UNSIGNED_SHORT = gl_1.default.UNSIGNED_SHORT;
 	Attribute.FLOAT = gl_1.default.FLOAT;
-	Attribute.ARRAY_BUFFER = gl_1.default.ARRAY_BUFFER;
-	Attribute.ELEMENT_ARRAY_BUFFER = gl_1.default.ELEMENT_ARRAY_BUFFER;
 	Attribute.POINTS = gl_1.default.POINTS;
 	Attribute.LINES = gl_1.default.LINES;
 	Attribute.LINE_STRIP = gl_1.default.LINE_STRIP;
@@ -319,7 +330,8 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
 	var gl_1 = __webpack_require__(4);
-	var Uniform_1 = __webpack_require__(6);
+	var Constants_1 = __webpack_require__(6);
+	var Uniform_1 = __webpack_require__(7);
 	var Matrix3_1 = __webpack_require__(9);
 	var Vector2_1 = __webpack_require__(20);
 	var MatrixUniform_1 = __webpack_require__(21);
@@ -371,6 +383,8 @@
 	        this._id = guid_1.getId();
 	        this._zIndex = 0;
 	        this._name = '';
+	        this._drawMethod = Constants_1.default.DrawMethod.ARRAYS;
+	        this._elementType = Constants_1.default.ElementType.UNSIGNED_BYTE;
 	        this.position = new Vector2_1.default(0, 0);
 	        this.scale = new Vector2_1.default(1, 1);
 	        this._rotation = 0;
@@ -513,6 +527,16 @@
 	            return this._drawType;
 	        }
 	    }, {
+	        key: 'drawMethod',
+	        get: function get() {
+	            return this._drawMethod;
+	        }
+	    }, {
+	        key: 'elementType',
+	        get: function get() {
+	            return this._elementType;
+	        }
+	    }, {
 	        key: 'startIndex',
 	        get: function get() {
 	            return this._startIndex;
@@ -550,6 +574,92 @@
 
 	"use strict";
 	
+	var gl_1 = __webpack_require__(4);
+	var Constants;
+	(function (Constants) {
+	    (function (AttributeUsage) {
+	        AttributeUsage[AttributeUsage["STATIC_DRAW"] = gl_1.default.STATIC_DRAW] = "STATIC_DRAW";
+	        AttributeUsage[AttributeUsage["DYNAMIC_DRAW"] = gl_1.default.DYNAMIC_DRAW] = "DYNAMIC_DRAW";
+	        AttributeUsage[AttributeUsage["STREAM_DRAW"] = gl_1.default.STREAM_DRAW] = "STREAM_DRAW";
+	    })(Constants.AttributeUsage || (Constants.AttributeUsage = {}));
+	    var AttributeUsage = Constants.AttributeUsage;
+	    (function (AttributeType) {
+	        AttributeType[AttributeType["BYTE"] = gl_1.default.BYTE] = "BYTE";
+	        AttributeType[AttributeType["UNSIGNED_BYTE"] = gl_1.default.UNSIGNED_BYTE] = "UNSIGNED_BYTE";
+	        AttributeType[AttributeType["SHORT"] = gl_1.default.SHORT] = "SHORT";
+	        AttributeType[AttributeType["UNSIGNED_SHORT"] = gl_1.default.UNSIGNED_SHORT] = "UNSIGNED_SHORT";
+	        AttributeType[AttributeType["FLOAT"] = gl_1.default.FLOAT] = "FLOAT";
+	    })(Constants.AttributeType || (Constants.AttributeType = {}));
+	    var AttributeType = Constants.AttributeType;
+	    (function (DrawType) {
+	        DrawType[DrawType["POINTS"] = gl_1.default.POINTS] = "POINTS";
+	        DrawType[DrawType["LINES"] = gl_1.default.LINES] = "LINES";
+	        DrawType[DrawType["LINE_STRIP"] = gl_1.default.LINE_STRIP] = "LINE_STRIP";
+	        DrawType[DrawType["LINE_LOOP"] = gl_1.default.LINE_LOOP] = "LINE_LOOP";
+	        DrawType[DrawType["TRIANGLES"] = gl_1.default.TRIANGLES] = "TRIANGLES";
+	        DrawType[DrawType["TRIANGLE_STRIP"] = gl_1.default.TRIANGLE_STRIP] = "TRIANGLE_STRIP";
+	        DrawType[DrawType["TRIANGLE_FAN"] = gl_1.default.TRIANGLE_FAN] = "TRIANGLE_FAN";
+	    })(Constants.DrawType || (Constants.DrawType = {}));
+	    var DrawType = Constants.DrawType;
+	    (function (DrawMethod) {
+	        DrawMethod[DrawMethod["ARRAYS"] = 0] = "ARRAYS";
+	        DrawMethod[DrawMethod["ELEMENTS"] = 1] = "ELEMENTS";
+	    })(Constants.DrawMethod || (Constants.DrawMethod = {}));
+	    var DrawMethod = Constants.DrawMethod;
+	    (function (ElementType) {
+	        ElementType[ElementType["UNSIGNED_BYTE"] = gl_1.default.UNSIGNED_BYTE] = "UNSIGNED_BYTE";
+	        ElementType[ElementType["UNSIGNED_SHORT"] = gl_1.default.UNSIGNED_SHORT] = "UNSIGNED_SHORT";
+	    })(Constants.ElementType || (Constants.ElementType = {}));
+	    var ElementType = Constants.ElementType;
+	    (function (UniformType) {
+	        UniformType[UniformType["INT"] = 0] = "INT";
+	        UniformType[UniformType["FLOAT"] = 1] = "FLOAT";
+	    })(Constants.UniformType || (Constants.UniformType = {}));
+	    var UniformType = Constants.UniformType;
+	    (function (TextureMagFilter) {
+	        TextureMagFilter[TextureMagFilter["LINEAR"] = gl_1.default.LINEAR] = "LINEAR";
+	        TextureMagFilter[TextureMagFilter["NEAREST"] = gl_1.default.NEAREST] = "NEAREST";
+	    })(Constants.TextureMagFilter || (Constants.TextureMagFilter = {}));
+	    var TextureMagFilter = Constants.TextureMagFilter;
+	    (function (TextureMinFilter) {
+	        TextureMinFilter[TextureMinFilter["LINEAR"] = gl_1.default.LINEAR] = "LINEAR";
+	        TextureMinFilter[TextureMinFilter["NEAREST_MIPMAP_NEAREST"] = gl_1.default.NEAREST_MIPMAP_NEAREST] = "NEAREST_MIPMAP_NEAREST";
+	        TextureMinFilter[TextureMinFilter["LINEAR_MIPMAP_NEAREST"] = gl_1.default.LINEAR_MIPMAP_NEAREST] = "LINEAR_MIPMAP_NEAREST";
+	        TextureMinFilter[TextureMinFilter["NEAREST_MIPMAP_LINEAR"] = gl_1.default.NEAREST_MIPMAP_LINEAR] = "NEAREST_MIPMAP_LINEAR";
+	        TextureMinFilter[TextureMinFilter["LINEAR_MIPMAP_LINEAR"] = gl_1.default.LINEAR_MIPMAP_LINEAR] = "LINEAR_MIPMAP_LINEAR";
+	    })(Constants.TextureMinFilter || (Constants.TextureMinFilter = {}));
+	    var TextureMinFilter = Constants.TextureMinFilter;
+	    (function (TextureWrap) {
+	        TextureWrap[TextureWrap["REPEAT"] = gl_1.default.REPEAT] = "REPEAT";
+	        TextureWrap[TextureWrap["CLAMP_TO_EDGE"] = gl_1.default.CLAMP_TO_EDGE] = "CLAMP_TO_EDGE";
+	        TextureWrap[TextureWrap["MIRRORED_REPEAT"] = gl_1.default.MIRRORED_REPEAT] = "MIRRORED_REPEAT";
+	    })(Constants.TextureWrap || (Constants.TextureWrap = {}));
+	    var TextureWrap = Constants.TextureWrap;
+	    (function (TextureFormat) {
+	        TextureFormat[TextureFormat["ALPHA"] = gl_1.default.ALPHA] = "ALPHA";
+	        TextureFormat[TextureFormat["RGB"] = gl_1.default.RGB] = "RGB";
+	        TextureFormat[TextureFormat["RGBA"] = gl_1.default.RGBA] = "RGBA";
+	        TextureFormat[TextureFormat["LUMINANCE"] = gl_1.default.LUMINANCE] = "LUMINANCE";
+	        TextureFormat[TextureFormat["LUMINANCE_ALPHA"] = gl_1.default.LUMINANCE_ALPHA] = "LUMINANCE_ALPHA";
+	    })(Constants.TextureFormat || (Constants.TextureFormat = {}));
+	    var TextureFormat = Constants.TextureFormat;
+	    (function (TextureTexelFormat) {
+	        TextureTexelFormat[TextureTexelFormat["UNSIGNED_BYTE"] = gl_1.default.UNSIGNED_BYTE] = "UNSIGNED_BYTE";
+	        TextureTexelFormat[TextureTexelFormat["UNSIGNED_SHORT_5_6_5"] = gl_1.default.UNSIGNED_SHORT_5_6_5] = "UNSIGNED_SHORT_5_6_5";
+	        TextureTexelFormat[TextureTexelFormat["UNSIGNED_SHORT_4_4_4_4"] = gl_1.default.UNSIGNED_SHORT_4_4_4_4] = "UNSIGNED_SHORT_4_4_4_4";
+	        TextureTexelFormat[TextureTexelFormat["UNSIGNED_SHORT_5_5_5_1"] = gl_1.default.UNSIGNED_SHORT_5_5_5_1] = "UNSIGNED_SHORT_5_5_5_1";
+	    })(Constants.TextureTexelFormat || (Constants.TextureTexelFormat = {}));
+	    var TextureTexelFormat = Constants.TextureTexelFormat;
+	})(Constants || (Constants = {}));
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = Constants;
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
 	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
@@ -561,8 +671,8 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
 	var gl_1 = __webpack_require__(4);
-	var AbstractUniform_1 = __webpack_require__(7);
-	var Constants_1 = __webpack_require__(8);
+	var AbstractUniform_1 = __webpack_require__(8);
+	var Constants_1 = __webpack_require__(6);
 	
 	var Uniform = function (_AbstractUniform_1$de) {
 	    _inherits(Uniform, _AbstractUniform_1$de);
@@ -617,7 +727,7 @@
 	exports.default = Uniform;
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -651,87 +761,6 @@
 	
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = AbstractUniform;
-
-/***/ },
-/* 8 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	
-	var gl_1 = __webpack_require__(4);
-	var Constants;
-	(function (Constants) {
-	    (function (AttributeTarget) {
-	        AttributeTarget[AttributeTarget["ARRAY_BUFFER"] = gl_1.default.ARRAY_BUFFER] = "ARRAY_BUFFER";
-	        AttributeTarget[AttributeTarget["ELEMENT_ARRAY_BUFFER"] = gl_1.default.ELEMENT_ARRAY_BUFFER] = "ELEMENT_ARRAY_BUFFER";
-	    })(Constants.AttributeTarget || (Constants.AttributeTarget = {}));
-	    var AttributeTarget = Constants.AttributeTarget;
-	    (function (AttributeUsage) {
-	        AttributeUsage[AttributeUsage["STATIC_DRAW"] = gl_1.default.STATIC_DRAW] = "STATIC_DRAW";
-	        AttributeUsage[AttributeUsage["DYNAMIC_DRAW"] = gl_1.default.DYNAMIC_DRAW] = "DYNAMIC_DRAW";
-	        AttributeUsage[AttributeUsage["STREAM_DRAW"] = gl_1.default.STREAM_DRAW] = "STREAM_DRAW";
-	    })(Constants.AttributeUsage || (Constants.AttributeUsage = {}));
-	    var AttributeUsage = Constants.AttributeUsage;
-	    (function (AttributeType) {
-	        AttributeType[AttributeType["BYTE"] = gl_1.default.BYTE] = "BYTE";
-	        AttributeType[AttributeType["UNSIGNED_BYTE"] = gl_1.default.UNSIGNED_BYTE] = "UNSIGNED_BYTE";
-	        AttributeType[AttributeType["SHORT"] = gl_1.default.SHORT] = "SHORT";
-	        AttributeType[AttributeType["UNSIGNED_SHORT"] = gl_1.default.UNSIGNED_SHORT] = "UNSIGNED_SHORT";
-	        AttributeType[AttributeType["FLOAT"] = gl_1.default.FLOAT] = "FLOAT";
-	    })(Constants.AttributeType || (Constants.AttributeType = {}));
-	    var AttributeType = Constants.AttributeType;
-	    (function (DrawType) {
-	        DrawType[DrawType["POINTS"] = gl_1.default.POINTS] = "POINTS";
-	        DrawType[DrawType["LINES"] = gl_1.default.LINES] = "LINES";
-	        DrawType[DrawType["LINE_STRIP"] = gl_1.default.LINE_STRIP] = "LINE_STRIP";
-	        DrawType[DrawType["LINE_LOOP"] = gl_1.default.LINE_LOOP] = "LINE_LOOP";
-	        DrawType[DrawType["TRIANGLES"] = gl_1.default.TRIANGLES] = "TRIANGLES";
-	        DrawType[DrawType["TRIANGLE_STRIP"] = gl_1.default.TRIANGLE_STRIP] = "TRIANGLE_STRIP";
-	        DrawType[DrawType["TRIANGLE_FAN"] = gl_1.default.TRIANGLE_FAN] = "TRIANGLE_FAN";
-	    })(Constants.DrawType || (Constants.DrawType = {}));
-	    var DrawType = Constants.DrawType;
-	    (function (UniformType) {
-	        UniformType[UniformType["INT"] = 0] = "INT";
-	        UniformType[UniformType["FLOAT"] = 1] = "FLOAT";
-	    })(Constants.UniformType || (Constants.UniformType = {}));
-	    var UniformType = Constants.UniformType;
-	    (function (TextureMagFilter) {
-	        TextureMagFilter[TextureMagFilter["LINEAR"] = gl_1.default.LINEAR] = "LINEAR";
-	        TextureMagFilter[TextureMagFilter["NEAREST"] = gl_1.default.NEAREST] = "NEAREST";
-	    })(Constants.TextureMagFilter || (Constants.TextureMagFilter = {}));
-	    var TextureMagFilter = Constants.TextureMagFilter;
-	    (function (TextureMinFilter) {
-	        TextureMinFilter[TextureMinFilter["LINEAR"] = gl_1.default.LINEAR] = "LINEAR";
-	        TextureMinFilter[TextureMinFilter["NEAREST_MIPMAP_NEAREST"] = gl_1.default.NEAREST_MIPMAP_NEAREST] = "NEAREST_MIPMAP_NEAREST";
-	        TextureMinFilter[TextureMinFilter["LINEAR_MIPMAP_NEAREST"] = gl_1.default.LINEAR_MIPMAP_NEAREST] = "LINEAR_MIPMAP_NEAREST";
-	        TextureMinFilter[TextureMinFilter["NEAREST_MIPMAP_LINEAR"] = gl_1.default.NEAREST_MIPMAP_LINEAR] = "NEAREST_MIPMAP_LINEAR";
-	        TextureMinFilter[TextureMinFilter["LINEAR_MIPMAP_LINEAR"] = gl_1.default.LINEAR_MIPMAP_LINEAR] = "LINEAR_MIPMAP_LINEAR";
-	    })(Constants.TextureMinFilter || (Constants.TextureMinFilter = {}));
-	    var TextureMinFilter = Constants.TextureMinFilter;
-	    (function (TextureWrap) {
-	        TextureWrap[TextureWrap["REPEAT"] = gl_1.default.REPEAT] = "REPEAT";
-	        TextureWrap[TextureWrap["CLAMP_TO_EDGE"] = gl_1.default.CLAMP_TO_EDGE] = "CLAMP_TO_EDGE";
-	        TextureWrap[TextureWrap["MIRRORED_REPEAT"] = gl_1.default.MIRRORED_REPEAT] = "MIRRORED_REPEAT";
-	    })(Constants.TextureWrap || (Constants.TextureWrap = {}));
-	    var TextureWrap = Constants.TextureWrap;
-	    (function (TextureFormat) {
-	        TextureFormat[TextureFormat["ALPHA"] = gl_1.default.ALPHA] = "ALPHA";
-	        TextureFormat[TextureFormat["RGB"] = gl_1.default.RGB] = "RGB";
-	        TextureFormat[TextureFormat["RGBA"] = gl_1.default.RGBA] = "RGBA";
-	        TextureFormat[TextureFormat["LUMINANCE"] = gl_1.default.LUMINANCE] = "LUMINANCE";
-	        TextureFormat[TextureFormat["LUMINANCE_ALPHA"] = gl_1.default.LUMINANCE_ALPHA] = "LUMINANCE_ALPHA";
-	    })(Constants.TextureFormat || (Constants.TextureFormat = {}));
-	    var TextureFormat = Constants.TextureFormat;
-	    (function (TextureTexelFormat) {
-	        TextureTexelFormat[TextureTexelFormat["UNSIGNED_BYTE"] = gl_1.default.UNSIGNED_BYTE] = "UNSIGNED_BYTE";
-	        TextureTexelFormat[TextureTexelFormat["UNSIGNED_SHORT_5_6_5"] = gl_1.default.UNSIGNED_SHORT_5_6_5] = "UNSIGNED_SHORT_5_6_5";
-	        TextureTexelFormat[TextureTexelFormat["UNSIGNED_SHORT_4_4_4_4"] = gl_1.default.UNSIGNED_SHORT_4_4_4_4] = "UNSIGNED_SHORT_4_4_4_4";
-	        TextureTexelFormat[TextureTexelFormat["UNSIGNED_SHORT_5_5_5_1"] = gl_1.default.UNSIGNED_SHORT_5_5_5_1] = "UNSIGNED_SHORT_5_5_5_1";
-	    })(Constants.TextureTexelFormat || (Constants.TextureTexelFormat = {}));
-	    var TextureTexelFormat = Constants.TextureTexelFormat;
-	})(Constants || (Constants = {}));
-	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.default = Constants;
 
 /***/ },
 /* 9 */
@@ -7449,7 +7478,7 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
 	var gl_1 = __webpack_require__(4);
-	var AbstractUniform_1 = __webpack_require__(7);
+	var AbstractUniform_1 = __webpack_require__(8);
 	
 	var MatrixUniform = function (_AbstractUniform_1$de) {
 	    _inherits(MatrixUniform, _AbstractUniform_1$de);
@@ -7513,8 +7542,8 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
 	var gl_1 = __webpack_require__(4);
-	var AbstractUniform_1 = __webpack_require__(7);
-	var Constants_1 = __webpack_require__(8);
+	var AbstractUniform_1 = __webpack_require__(8);
+	var Constants_1 = __webpack_require__(6);
 	
 	var TextureUniform = function (_AbstractUniform_1$de) {
 	    _inherits(TextureUniform, _AbstractUniform_1$de);
@@ -7778,7 +7807,7 @@
 	
 	var Attribute_1 = __webpack_require__(3);
 	var Drawable_1 = __webpack_require__(5);
-	var Uniform_1 = __webpack_require__(6);
+	var Uniform_1 = __webpack_require__(7);
 	var Vector2_1 = __webpack_require__(20);
 	var Color_1 = __webpack_require__(32);
 	var Line_1 = __webpack_require__(33);
@@ -7799,7 +7828,7 @@
 	        _this._width = _width;
 	        _this._color = new Color_1.default(0xff0000);
 	        var length = _this.points.length;
-	        _this.a_vertex = new Attribute_1.default(Attribute_1.default.ARRAY_BUFFER, new Float32Array(length * 2 * 2), Attribute_1.default.FLOAT, 2);
+	        _this.a_vertex = new Attribute_1.default(new Float32Array(length * 2 * 2), Attribute_1.default.FLOAT, 2);
 	        _this.attachAttribute('a_vertex', _this.a_vertex);
 	        _this.u_color = new Uniform_1.default(Uniform_1.default.FLOAT, 4);
 	        (_this$u_color = _this.u_color).set.apply(_this$u_color, _toConsumableArray(_this._color.toGl()));
@@ -8090,7 +8119,7 @@
 	var TextureUniform_1 = __webpack_require__(22);
 	var Texture_1 = __webpack_require__(38);
 	var Color_1 = __webpack_require__(32);
-	var Uniform_1 = __webpack_require__(6);
+	var Uniform_1 = __webpack_require__(7);
 	var Text_glsl_1 = __webpack_require__(39);
 	var Text_glsl_2 = __webpack_require__(40);
 	
@@ -8109,9 +8138,9 @@
 	        _this._height = _height;
 	        _this._color = new Color_1.default(0xff0000);
 	        _this._width = 0;
-	        _this.a_vertex = new Attribute_1.default(Attribute_1.default.ARRAY_BUFFER, new Float32Array(null), Attribute_1.default.FLOAT, 2);
+	        _this.a_vertex = new Attribute_1.default(new Float32Array(null), Attribute_1.default.FLOAT, 2);
 	        _this.attachAttribute('a_vertex', _this.a_vertex);
-	        _this.a_uv = new Attribute_1.default(Attribute_1.default.ARRAY_BUFFER, new Float32Array(null), Attribute_1.default.FLOAT, 2);
+	        _this.a_uv = new Attribute_1.default(new Float32Array(null), Attribute_1.default.FLOAT, 2);
 	        _this.attachAttribute('a_uv', _this.a_uv);
 	        _this.u_tex = new TextureUniform_1.default(Texture_1.default.fromImage(_font.image));
 	        _this.attachUniform('u_tex', _this.u_tex);
@@ -8378,9 +8407,9 @@
 	        _this._height = _height;
 	        _this._xIndex = 0;
 	        _this._yIndex = 0;
-	        _this.a_vertex = new Attribute_1.default(Attribute_1.default.ARRAY_BUFFER, new Float32Array(8), Attribute_1.default.FLOAT, 2);
+	        _this.a_vertex = new Attribute_1.default(new Float32Array(8), Attribute_1.default.FLOAT, 2);
 	        _this.attachAttribute('a_vertex', _this.a_vertex);
-	        _this.a_uv = new Attribute_1.default(Attribute_1.default.ARRAY_BUFFER, new Float32Array(8), Attribute_1.default.FLOAT, 2);
+	        _this.a_uv = new Attribute_1.default(new Float32Array(8), Attribute_1.default.FLOAT, 2);
 	        _this.attachAttribute('a_uv', _this.a_uv);
 	        _this.u_tex = new TextureUniform_1.default(texture);
 	        _this.attachUniform('u_tex', _this.u_tex);
@@ -8567,7 +8596,8 @@
 	var Attribute_1 = __webpack_require__(3);
 	var Drawable_1 = __webpack_require__(5);
 	var Color_1 = __webpack_require__(32);
-	var Uniform_1 = __webpack_require__(6);
+	var Uniform_1 = __webpack_require__(7);
+	var Constants_1 = __webpack_require__(6);
 	var earcut = __webpack_require__(46);
 	var Polygon_glsl_1 = __webpack_require__(47);
 	var Polygon_glsl_2 = __webpack_require__(48);
@@ -8584,11 +8614,12 @@
 	
 	        _this._points = _points;
 	        _this._color = new Color_1.default(0xff0000);
-	        _this.a_vertex = new Attribute_1.default(Attribute_1.default.ARRAY_BUFFER, null, Attribute_1.default.FLOAT, 2);
+	        _this.a_vertex = new Attribute_1.default(null, Attribute_1.default.FLOAT, 2);
 	        _this.attachAttribute('a_vertex', _this.a_vertex);
 	        _this.u_color = new Uniform_1.default(Uniform_1.default.FLOAT, 4);
 	        (_this$u_color = _this.u_color).set.apply(_this$u_color, _toConsumableArray(_this._color.toGl()));
 	        _this.attachUniform('u_color', _this.u_color);
+	        _this._drawMethod = Constants_1.default.DrawMethod.ELEMENTS;
 	        _this.calculateVertices();
 	        return _this;
 	    }
@@ -8597,20 +8628,21 @@
 	        key: 'calculateVertices',
 	        value: function calculateVertices() {
 	            if (this._points.length) {
-	                var indices = earcut(this._points.map(function (vec) {
+	                var points = this._points.map(function (vec) {
 	                    return [vec.x, vec.y];
 	                }).reduce(function (l, v) {
 	                    return l.concat(v);
-	                }, []));
-	                var length = this._points.length - 2;
-	                var data = new Float32Array(length * 3 * 2);
-	                for (var i = 0, l = indices.length; i < l; i++) {
-	                    var p = this._points[indices[i]];
-	                    data[i * 2] = p.x;
-	                    data[i * 2 + 1] = p.y;
+	                }, []);
+	                this.a_vertex.replaceWith(new Float32Array(points));
+	                var indices = earcut(points);
+	                if (indices.length > 255) {
+	                    this._elementType = Constants_1.default.ElementType.UNSIGNED_SHORT;
+	                    this.a_vertex.indexBuffer = new Uint16Array(indices);
+	                } else {
+	                    this._elementType = Constants_1.default.ElementType.UNSIGNED_BYTE;
+	                    this.a_vertex.indexBuffer = new Uint8Array(indices);
 	                }
-	                this.a_vertex.replaceWith(data);
-	                this._endIndex = length * 3;
+	                this._endIndex = indices.length;
 	            }
 	        }
 	    }, {
@@ -9330,8 +9362,8 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
 	var gl_1 = __webpack_require__(4);
-	var AbstractUniform_1 = __webpack_require__(7);
-	var Constants_1 = __webpack_require__(8);
+	var AbstractUniform_1 = __webpack_require__(8);
+	var Constants_1 = __webpack_require__(6);
 	
 	var ArrayUniform = function (_AbstractUniform_1$de) {
 	    _inherits(ArrayUniform, _AbstractUniform_1$de);
@@ -20512,6 +20544,7 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
 	var gl_1 = __webpack_require__(4);
+	var Constants_1 = __webpack_require__(6);
 	var Vector2_1 = __webpack_require__(20);
 	var guid_1 = __webpack_require__(26);
 	var scale_1 = __webpack_require__(24);
@@ -20601,7 +20634,11 @@
 	                    gl_1.default.useProgram(child.program);
 	                    child.offscreen = false;
 	                    child.update();
-	                    gl_1.default.drawArrays(child.drawType, child.startIndex, child.endIndex);
+	                    if (child.drawMethod === Constants_1.default.DrawMethod.ARRAYS) {
+	                        gl_1.default.drawArrays(child.drawType, child.startIndex, child.endIndex);
+	                    } else {
+	                        gl_1.default.drawElements(child.drawType, child.endIndex, child.elementType, child.startIndex);
+	                    }
 	                }
 	            } catch (err) {
 	                _didIteratorError = true;
@@ -20633,7 +20670,11 @@
 	                    gl_1.default.useProgram(_child.program);
 	                    _child.offscreen = true;
 	                    _child.update();
-	                    gl_1.default.drawArrays(_child.drawType, _child.startIndex, _child.endIndex);
+	                    if (_child.drawMethod === Constants_1.default.DrawMethod.ARRAYS) {
+	                        gl_1.default.drawArrays(_child.drawType, _child.startIndex, _child.endIndex);
+	                    } else {
+	                        gl_1.default.drawElements(_child.drawType, _child.endIndex, _child.elementType, _child.startIndex);
+	                    }
 	                }
 	            } catch (err) {
 	                _didIteratorError2 = true;

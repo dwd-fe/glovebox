@@ -1,10 +1,6 @@
 import gl from 'core/gl';
 
 namespace Constants {
-    export enum AttributeTarget {
-        ARRAY_BUFFER = gl.ARRAY_BUFFER,
-        ELEMENT_ARRAY_BUFFER = gl.ELEMENT_ARRAY_BUFFER,
-    }
     export enum AttributeUsage {
         STATIC_DRAW = gl.STATIC_DRAW,
         DYNAMIC_DRAW = gl.DYNAMIC_DRAW,
@@ -25,6 +21,14 @@ namespace Constants {
         TRIANGLES = gl.TRIANGLES,
         TRIANGLE_STRIP = gl.TRIANGLE_STRIP,
         TRIANGLE_FAN = gl.TRIANGLE_FAN,
+    }
+    export enum DrawMethod {
+        ARRAYS,
+        ELEMENTS,
+    }
+    export enum ElementType {
+        UNSIGNED_BYTE = gl.UNSIGNED_BYTE,
+        UNSIGNED_SHORT = gl.UNSIGNED_SHORT,
     }
     export enum UniformType {
         INT,

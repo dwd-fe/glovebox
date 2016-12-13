@@ -21,6 +21,8 @@ export default class Drawable {
     protected _id: number;
     protected _zIndex: number;
     protected _name: string;
+    protected _drawMethod: Constants.DrawMethod;
+    protected _elementType: Constants.ElementType;
     position: Vector2;
     scale: Vector2;
     _rotation: number;
@@ -34,6 +36,8 @@ export default class Drawable {
     zIndex: number;
     readonly program: WebGLProgram;
     readonly drawType: Constants.DrawType;
+    readonly drawMethod: Constants.DrawMethod;
+    readonly elementType: Constants.ElementType;
     startIndex: number;
     endIndex: number;
     name: string;

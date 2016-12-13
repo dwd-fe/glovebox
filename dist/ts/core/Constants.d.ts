@@ -1,8 +1,4 @@
 declare namespace Constants {
-    enum AttributeTarget {
-        ARRAY_BUFFER,
-        ELEMENT_ARRAY_BUFFER,
-    }
     enum AttributeUsage {
         STATIC_DRAW,
         DYNAMIC_DRAW,
@@ -23,6 +19,14 @@ declare namespace Constants {
         TRIANGLES,
         TRIANGLE_STRIP,
         TRIANGLE_FAN,
+    }
+    enum DrawMethod {
+        ARRAYS = 0,
+        ELEMENTS = 1,
+    }
+    enum ElementType {
+        UNSIGNED_BYTE,
+        UNSIGNED_SHORT,
     }
     enum UniformType {
         INT = 0,

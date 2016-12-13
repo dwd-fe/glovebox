@@ -22,10 +22,10 @@ export default class Text extends Drawable {
     constructor(private _font: Font, private _text: string, private _height: number) {
         super(vs, fs);
 
-        this.a_vertex = new Attribute(Attribute.ARRAY_BUFFER, new Float32Array(null), Attribute.FLOAT, 2);
+        this.a_vertex = new Attribute(new Float32Array(null), Attribute.FLOAT, 2);
         this.attachAttribute('a_vertex', this.a_vertex);
 
-        this.a_uv = new Attribute(Attribute.ARRAY_BUFFER, new Float32Array(null), Attribute.FLOAT, 2);
+        this.a_uv = new Attribute(new Float32Array(null), Attribute.FLOAT, 2);
         this.attachAttribute('a_uv', this.a_uv);
 
         this.u_tex = new TextureUniform(Texture.fromImage(_font.image));

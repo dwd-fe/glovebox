@@ -43,12 +43,12 @@ class Triangle extends Drawable {
     }
 }
 
-const colors = new Attribute(Attribute.ARRAY_BUFFER, new Float32Array(9), Attribute.FLOAT, 3);
+const colors = new Attribute(new Float32Array(9), Attribute.FLOAT, 3);
 colors.set(0, 1, 0, 0);
 colors.set(1, 0, 1, 0);
 colors.set(2, 0, 0, 1);
 
-const vertices = new Attribute(Attribute.ARRAY_BUFFER, new Float32Array(6), Attribute.FLOAT, 2);
+const vertices = new Attribute(new Float32Array(6), Attribute.FLOAT, 2);
 vertices.set(0, 0, 0);
 vertices.set(1, 0, 100);
 vertices.set(2, 100, 100);

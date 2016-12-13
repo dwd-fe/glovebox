@@ -13,9 +13,6 @@ export default class Attribute {
     static UNSIGNED_SHORT: Constants.AttributeType = gl.UNSIGNED_SHORT;
     static FLOAT: Constants.AttributeType = gl.FLOAT;
 
-    static ARRAY_BUFFER: Constants.AttributeTarget = gl.ARRAY_BUFFER;
-    static ELEMENT_ARRAY_BUFFER: Constants.AttributeTarget = gl.ELEMENT_ARRAY_BUFFER;
-
     static POINTS: Constants.DrawType = gl.POINTS;
     static LINES: Constants.DrawType = gl.LINES;
     static LINE_STRIP: Constants.DrawType = gl.LINE_STRIP;
@@ -27,21 +24,19 @@ export default class Attribute {
     protected updated: boolean = true;
     protected dataSize: number;
     protected _buffer: Constants.TypedArray;
-    protected _target: Constants.AttributeTarget;
     protected _bufferPointer: WebGLBuffer;
     protected _usage: Constants.AttributeUsage = gl.STATIC_DRAW;
     protected _normalized: boolean = false;
     protected _stride: number = 0;
     protected _offset: number = 0;
     protected _type: Constants.AttributeType;
+    protected _indexBuffer: Uint16Array | Uint8Array;
 
     constructor(
-        target: Constants.AttributeTarget,
         buffer: Constants.TypedArray,
         type: Constants.AttributeType,
         dataSize: number
     ) {
-        this._target = target;
         this._type = type;
         this._buffer = buffer;
         this.dataSize = dataSize;
@@ -73,16 +68,26 @@ export default class Attribute {
         return result;
     }
 
+    public get indexBuffer(): Uint16Array | Uint8Array {
+        return this._indexBuffer;
+    }
+
+    public set indexBuffer(indexBuffer: Uint16Array | Uint8Array) {
+        this._indexBuffer = indexBuffer;
+        this.updated = true;
+    }
+
     replaceWith(buffer: Constants.TypedArray): void {
         this._buffer = buffer;
     }
+
 
     update(loc: number): void {
         if (!this._bufferPointer) {
             this._bufferPointer = gl.createBuffer();
         }
-        gl.bindBuffer(this._target, this._bufferPointer);
-        gl.bufferData(this._target, this._buffer, this._usage);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this._bufferPointer);
+        gl.bufferData(gl.ARRAY_BUFFER, this._buffer, this._usage);
         gl.vertexAttribPointer(
             loc,
             this.dataSize,
@@ -91,6 +96,11 @@ export default class Attribute {
             this._stride,
             this._offset
         );
+        if (this._indexBuffer) {
+            const buffer = gl.createBuffer();
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
+            gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this._indexBuffer, this._usage);
+        }
         this.updated = false;
     }
 }

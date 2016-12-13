@@ -80,7 +80,11 @@ export default class Stage {
             gl.useProgram(child.program);
             child.offscreen = false;
             child.update();
-            gl.drawArrays(child.drawType, child.startIndex, child.endIndex);
+            if (child.drawMethod === Constants.DrawMethod.ARRAYS) {
+                gl.drawArrays(child.drawType, child.startIndex, child.endIndex);
+            } else {
+                gl.drawElements(child.drawType, child.endIndex, child.elementType, child.startIndex);
+            }
         }
 
         viewportScale.updated = false;
@@ -92,7 +96,11 @@ export default class Stage {
             gl.useProgram(child.program);
             child.offscreen = true;
             child.update();
-            gl.drawArrays(child.drawType, child.startIndex, child.endIndex);
+            if (child.drawMethod === Constants.DrawMethod.ARRAYS) {
+                gl.drawArrays(child.drawType, child.startIndex, child.endIndex);
+            } else {
+                gl.drawElements(child.drawType, child.endIndex, child.elementType, child.startIndex);
+            }
         }
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     }

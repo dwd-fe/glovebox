@@ -18,7 +18,7 @@ export default class LineMesh extends Drawable {
     constructor(private points: Vector2[], private _width: number) {
         super(vs, fs);
         const length = this.points.length;
-        this.a_vertex = new Attribute(Attribute.ARRAY_BUFFER, new Float32Array(length * 2 * 2), Attribute.FLOAT, 2);
+        this.a_vertex = new Attribute(new Float32Array(length * 2 * 2), Attribute.FLOAT, 2);
         this.attachAttribute('a_vertex', this.a_vertex);
 
         this.u_color = new Uniform(Uniform.FLOAT, 4);

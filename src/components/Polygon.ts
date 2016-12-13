@@ -4,6 +4,7 @@ import Drawable from 'core/Drawable';
 import Color from 'core/Color';
 import Uniform from 'core/Uniform';
 import Vector2 from 'math/Vector2';
+import Constants from 'core/Constants';
 import earcut = require('earcut');
 
 import vs from 'shaders/vertex/Polygon.glsl';
@@ -18,13 +19,15 @@ export default class Polygon extends Drawable {
 
     constructor(protected _points: Vector2[]) {
         super(vs, fs);
-        this.a_vertex = new Attribute(Attribute.ARRAY_BUFFER, null, Attribute.FLOAT, 2);
+        this.a_vertex = new Attribute(null, Attribute.FLOAT, 2);
         this.attachAttribute('a_vertex', this.a_vertex);
 
         this.u_color = new Uniform(Uniform.FLOAT, 4);
         this.u_color.set(...this._color.toGl());
         this.attachUniform('u_color', this.u_color);
 
+
+        this._drawMethod = Constants.DrawMethod.ELEMENTS;
         this.calculateVertices();
     }
 
@@ -57,18 +60,17 @@ export default class Polygon extends Drawable {
 
     protected calculateVertices(): void {
         if (this._points.length) {
-            const indices = earcut(this._points.map(vec => [vec.x, vec.y]).reduce((l, v) => l.concat(v), []));
-            const length = this._points.length - 2;
-            const data = new Float32Array(length * 3 * 2)
-
-            for (let i = 0, l = indices.length; i < l; i++) {
-                const p = this._points[indices[i]];
-                data[i * 2] = p.x;
-                data[i * 2 + 1] = p.y;
+            const points = this._points.map(vec => [vec.x, vec.y]).reduce((l, v) => l.concat(v), []);
+            this.a_vertex.replaceWith(new Float32Array(points));
+            const indices = earcut(points);
+            if (indices.length > 255) {
+                this._elementType = Constants.ElementType.UNSIGNED_SHORT;
+                this.a_vertex.indexBuffer = new Uint16Array(indices);
+            } else {
+                this._elementType = Constants.ElementType.UNSIGNED_BYTE;
+                this.a_vertex.indexBuffer = new Uint8Array(indices);
             }
-
-            this.a_vertex.replaceWith(data);
-            this._endIndex = length * 3;
+            this._endIndex = indices.length;
         }
     }
 }

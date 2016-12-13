@@ -8,8 +8,6 @@ export default class Attribute {
     static SHORT: Constants.AttributeType;
     static UNSIGNED_SHORT: Constants.AttributeType;
     static FLOAT: Constants.AttributeType;
-    static ARRAY_BUFFER: Constants.AttributeTarget;
-    static ELEMENT_ARRAY_BUFFER: Constants.AttributeTarget;
     static POINTS: Constants.DrawType;
     static LINES: Constants.DrawType;
     static LINE_STRIP: Constants.DrawType;
@@ -20,18 +18,19 @@ export default class Attribute {
     protected updated: boolean;
     protected dataSize: number;
     protected _buffer: Constants.TypedArray;
-    protected _target: Constants.AttributeTarget;
     protected _bufferPointer: WebGLBuffer;
     protected _usage: Constants.AttributeUsage;
     protected _normalized: boolean;
     protected _stride: number;
     protected _offset: number;
     protected _type: Constants.AttributeType;
-    constructor(target: Constants.AttributeTarget, buffer: Constants.TypedArray, type: Constants.AttributeType, dataSize: number);
+    protected _indexBuffer: Uint16Array | Uint8Array;
+    constructor(buffer: Constants.TypedArray, type: Constants.AttributeType, dataSize: number);
     readonly needsUpdate: boolean;
     readonly buffer: WebGLBuffer;
     set(index: number, ...data: number[]): void;
     get(index: number): number[];
+    indexBuffer: Uint16Array | Uint8Array;
     replaceWith(buffer: Constants.TypedArray): void;
     update(loc: number): void;
 }

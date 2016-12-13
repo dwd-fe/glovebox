@@ -47,6 +47,8 @@ void main() {
     return result;
 }
 
+
+
 export default class Drawable {
     protected attributes: { [name: string]: { attribute: Attribute, attached: boolean } } = {};
     protected uniforms: { [name: string]: AbstractUniform } = {};
@@ -57,6 +59,8 @@ export default class Drawable {
     protected _id: number = getId();
     protected _zIndex: number = 0;
     protected _name: string = '';
+    protected _drawMethod: Constants.DrawMethod = Constants.DrawMethod.ARRAYS;
+    protected _elementType: Constants.ElementType = Constants.ElementType.UNSIGNED_BYTE;
 
     public position: Vector2 = new Vector2(0, 0);
     public scale: Vector2 = new Vector2(1, 1);
@@ -121,6 +125,14 @@ export default class Drawable {
 
     public get drawType(): Constants.DrawType {
         return this._drawType;
+    }
+
+    public get drawMethod(): Constants.DrawMethod {
+        return this._drawMethod;
+    }
+
+    public get elementType(): Constants.ElementType {
+        return this._elementType
     }
 
     public get startIndex(): number {
