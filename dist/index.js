@@ -20602,27 +20602,11 @@
 	    }, {
 	        key: 'clickTest',
 	        value: function clickTest(x, y) {
-	            gl_1.default.bindFramebuffer(gl_1.default.FRAMEBUFFER, this.hitMap);
-	            var bytes = new Uint8Array(4);
-	            gl_1.default.readPixels(x, gl_1.default.drawingBufferHeight - y, 1, 1, gl_1.default.RGBA, gl_1.default.UNSIGNED_BYTE, bytes);
-	            gl_1.default.bindFramebuffer(gl_1.default.FRAMEBUFFER, null);
-	            return bytes[0] * 255 * 255 + bytes[1] * 255 + bytes[2];
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            if (this.camera.updated || this.scale.updated) {
-	                scale_1.default.x = this.scale.x;
-	                scale_1.default.y = this.scale.y;
-	                Camera_1.default.x = this.camera.x;
-	                Camera_1.default.y = this.camera.y;
-	            }
 	            var children = this._children.sort(function (a, b) {
 	                return a.zIndex - b.zIndex;
 	            });
-	            gl_1.default.disable(gl_1.default.DEPTH_TEST);
-	            gl_1.default.enable(gl_1.default.BLEND);
-	            gl_1.default.blendFunc(gl_1.default.SRC_ALPHA, gl_1.default.ONE_MINUS_SRC_ALPHA);
+	            gl_1.default.disable(gl_1.default.BLEND);
+	            gl_1.default.bindFramebuffer(gl_1.default.FRAMEBUFFER, this.hitMap);
 	            var _iteratorNormalCompletion = true;
 	            var _didIteratorError = false;
 	            var _iteratorError = undefined;
@@ -20632,7 +20616,7 @@
 	                    var child = _step.value;
 	
 	                    gl_1.default.useProgram(child.program);
-	                    child.offscreen = false;
+	                    child.offscreen = true;
 	                    child.update();
 	                    if (child.drawMethod === Constants_1.default.DrawMethod.ARRAYS) {
 	                        gl_1.default.drawArrays(child.drawType, child.startIndex, child.endIndex);
@@ -20655,25 +20639,42 @@
 	                }
 	            }
 	
-	            scale_1.default.updated = false;
-	            Camera_1.default.updated = false;
-	            gl_1.default.disable(gl_1.default.BLEND);
-	            gl_1.default.bindFramebuffer(gl_1.default.FRAMEBUFFER, this.hitMap);
+	            var bytes = new Uint8Array(4);
+	            gl_1.default.readPixels(x, gl_1.default.drawingBufferHeight - y, 1, 1, gl_1.default.RGBA, gl_1.default.UNSIGNED_BYTE, bytes);
+	            gl_1.default.bindFramebuffer(gl_1.default.FRAMEBUFFER, null);
+	            this.render();
+	            return bytes[0] * 255 * 255 + bytes[1] * 255 + bytes[2];
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            if (this.camera.updated || this.scale.updated) {
+	                scale_1.default.x = this.scale.x;
+	                scale_1.default.y = this.scale.y;
+	                Camera_1.default.x = this.camera.x;
+	                Camera_1.default.y = this.camera.y;
+	            }
+	            var children = this._children.sort(function (a, b) {
+	                return a.zIndex - b.zIndex;
+	            });
+	            gl_1.default.disable(gl_1.default.DEPTH_TEST);
+	            gl_1.default.enable(gl_1.default.BLEND);
+	            gl_1.default.blendFunc(gl_1.default.SRC_ALPHA, gl_1.default.ONE_MINUS_SRC_ALPHA);
 	            var _iteratorNormalCompletion2 = true;
 	            var _didIteratorError2 = false;
 	            var _iteratorError2 = undefined;
 	
 	            try {
 	                for (var _iterator2 = children[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-	                    var _child = _step2.value;
+	                    var child = _step2.value;
 	
-	                    gl_1.default.useProgram(_child.program);
-	                    _child.offscreen = true;
-	                    _child.update();
-	                    if (_child.drawMethod === Constants_1.default.DrawMethod.ARRAYS) {
-	                        gl_1.default.drawArrays(_child.drawType, _child.startIndex, _child.endIndex);
+	                    gl_1.default.useProgram(child.program);
+	                    child.offscreen = false;
+	                    child.update();
+	                    if (child.drawMethod === Constants_1.default.DrawMethod.ARRAYS) {
+	                        gl_1.default.drawArrays(child.drawType, child.startIndex, child.endIndex);
 	                    } else {
-	                        gl_1.default.drawElements(_child.drawType, _child.endIndex, _child.elementType, _child.startIndex);
+	                        gl_1.default.drawElements(child.drawType, child.endIndex, child.elementType, child.startIndex);
 	                    }
 	                }
 	            } catch (err) {
@@ -20691,7 +20692,8 @@
 	                }
 	            }
 	
-	            gl_1.default.bindFramebuffer(gl_1.default.FRAMEBUFFER, null);
+	            scale_1.default.updated = false;
+	            Camera_1.default.updated = false;
 	        }
 	    }, {
 	        key: 'children',

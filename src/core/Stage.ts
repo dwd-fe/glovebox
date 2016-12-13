@@ -58,10 +58,23 @@ export default class Stage {
     }
 
     clickTest(x: number, y: number): number {
+        const children = this._children.sort((a, b) => a.zIndex - b.zIndex);
+        gl.disable(gl.BLEND);
         gl.bindFramebuffer(gl.FRAMEBUFFER, this.hitMap);
+        for (const child of children) {
+            gl.useProgram(child.program);
+            child.offscreen = true;
+            child.update();
+            if (child.drawMethod === Constants.DrawMethod.ARRAYS) {
+                gl.drawArrays(child.drawType, child.startIndex, child.endIndex);
+            } else {
+                gl.drawElements(child.drawType, child.endIndex, child.elementType, child.startIndex);
+            }
+        }
         const bytes = new Uint8Array(4);
         gl.readPixels(x, gl.drawingBufferHeight - y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, bytes);
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+        this.render();
         return bytes[0] * 255 * 255 + bytes[1] * 255 + bytes[2];
     }
 
@@ -89,19 +102,5 @@ export default class Stage {
 
         viewportScale.updated = false;
         viewportCamera.updated = false;
-
-        gl.disable(gl.BLEND);
-        gl.bindFramebuffer(gl.FRAMEBUFFER, this.hitMap);
-        for (const child of children) {
-            gl.useProgram(child.program);
-            child.offscreen = true;
-            child.update();
-            if (child.drawMethod === Constants.DrawMethod.ARRAYS) {
-                gl.drawArrays(child.drawType, child.startIndex, child.endIndex);
-            } else {
-                gl.drawElements(child.drawType, child.endIndex, child.elementType, child.startIndex);
-            }
-        }
-        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     }
 }

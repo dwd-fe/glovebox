@@ -1,6 +1,6 @@
 {
   "name": "glovebox",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "WebGl 2D optimized library, targets large fancy data presentation scenarios.",
   "main": "dist/index.js",
   "typings": "dist/ts/index.d.ts",
@@ -22,7 +22,6 @@
     "babel-polyfill": "^6.13.0",
     "babel-preset-es2015": "^6.18.0",
     "es6-text-loader": "^1.0.2",
-    "happypack": "^3.0.1",
     "html-webpack-plugin": "^2.24.1",
     "source-map-loader": "^0.1.5",
     "ts-loader": "^1.3.0",

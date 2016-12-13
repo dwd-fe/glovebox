@@ -142,3 +142,6 @@ function render() {
     requestAnimationFrame(render);
 }
 render();
+document.onmousedown = e => {
+    console.log(`click: ${stage.clickTest(e.clientX, e.clientY)}`);
+}
